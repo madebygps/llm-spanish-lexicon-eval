@@ -1,117 +1,277 @@
-import csv
-from openai import OpenAI
 import json
-from typing import Optional
-from pydantic import BaseModel
-
-client = OpenAI(base_url="http://localhost:11434/v1/", api_key="local")
+from operator import itemgetter
+from openai import OpenAI
 
 
-class DefinitionJudgment(BaseModel):
-    correct: bool
-    confidence: Optional[float] = None
-    reasoning: Optional[str] = None
+def cloze_mcq(client, path="suite/cloze_mcq.jsonl", model="mistral:latest"):
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    total = 0
+    correct = 0
 
-with open("definitions.json") as dj:
-    dictionary_definition_data = json.load(dj)
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            data = json.loads(line)
+            task, question, choices, correct_answer = itemgetter(
+                "task", "question", "choices", "answer"
+            )(data)
 
-dictionary_lookup = {
-    item["word"]: item["definition"] for item in dictionary_definition_data
-}
+            # Label choices A), B), C)...
+            labeled = [f"{letters[i]}) {opt}" for i, opt in enumerate(choices)]
+            letter_map = {letters[i]: choices[i] for i in range(len(choices))}
 
-
-def get_llm_definition(word: str) -> str:
-    llm_definition = client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": f"Dime la definición de la palabra {word}. Solo la definición y nada mas. Concreto y conciso.",
-            }
-        ],
-        model="llama3.1:8b",
-    )
-    result = llm_definition.choices[0].message.content or ""
-    return result.strip()
-
-
-def llm_judges_itself(llm_definition: str, correct_definition: str, word: str) -> str:
-    did_llm_provide_correct_definition = client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": f"La definición correcta de {word} es {correct_definition}. "
-                f"Comparando con tu defición: {llm_definition} dime si estuviste correcto o no. "
-                "Response correcto o incorrecto y nada mas ",
-            }
-        ],
-        model="llama3.1:8b",
-    )
-    result = did_llm_provide_correct_definition.choices[0].message.content or ""
-    return result.strip()
-
-def llm_judges_itself_bool(llm_definition: str, correct_definition: str, word: str) -> bool:
-    """
-    Structured output version: returns a boolean JSON `{"correct": true/false}`.
-    Assumes the backend supports response_format with a JSON schema.
-    """
-    resp = client.chat.completions.create(
-        model="llama3.1:8b",
-        messages=[
-            {
-                "role": "user",
-                "content": (
-                    "Evalúa si la definición propuesta coincide suficientemente con la definición correcta.\n"
-                    f"Palabra: {word}\n"
-                    f"Definición correcta: {correct_definition}\n"
-                    f"Definición propuesta: {llm_definition}\n\n"
-                    "Devuelve SOLO un JSON válido EXACTAMENTE de la forma:\n"
-                    '{"correct": true}\n'
-                    "o\n"
-                    '{"correct": false}\n'
-                    "Sin texto adicional."
-                ),
-            }
-        ],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "definition_correctness",
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "correct": {"type": "boolean"}
+            # Ask the model
+            response = client.chat.completions.create(
+                model=model,
+                temperature=0,
+                max_tokens=5,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "Eres un asistente que responde preguntas de opción múltiple en español. "
+                            "Responde SOLO con la letra de la opción correcta (A, B, C, ...). "
+                            "No expliques tu razonamiento."
+                        ),
                     },
-                    "required": ["correct"],
-                    "additionalProperties": False,
-                },
-            },
-        },
-    )
-    content = resp.choices[0].message.content or ""
-    data = json.loads(content)  # simple parse; will raise if malformed
-    return data["correct"]
+                    {
+                        "role": "user",
+                        "content": (
+                            f"Pregunta: {question}\n"
+                            "Opciones:\n" + "\n".join(labeled) + "\n"
+                            "Respuesta (solo la letra):"
+                        ),
+                    },
+                ],
+            )
+
+            # Raw model output
+            model_output = response.choices[0].message.content.strip()
+
+            # Normalize: letter → choice text
+            letter = None
+            if model_output and len(model_output) >= 1:
+                first_char = model_output[0].upper()
+                if first_char in letter_map:
+                    letter = first_char
+
+            normalized_output = (letter_map[letter] if letter else model_output).strip().lower()
+
+            # Normalize correct answer
+            correct_answer_clean = correct_answer.strip().lower()
+
+            is_right = normalized_output == correct_answer_clean
+            total += 1
+            correct += int(is_right)
+
+            print(
+                f"Q{total}: {question}\n"
+                f"  Model said: {model_output}\n"
+                f"  Interpreted as: {normalized_output}\n"
+                f"  Correct answer: {correct_answer_clean}\n"
+                f"  Result: {'✅ Correct' if is_right else '❌ Wrong'}\n"
+            )
+
+    print(f"Final Accuracy: {correct}/{total} = {correct / total:.1%}")
+
+
+def everyday_qa(client, path="suite/everyday_qa.jsonl", model="mistral:latest"):
+    total = 0
+    correct = 0
+
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            data = json.loads(line)
+            task, question, correct_answer = itemgetter("task", "question", "answer")(
+                data
+            )
+
+            # Ask the model
+            response = client.chat.completions.create(
+                model=model,
+                temperature=0,
+                max_tokens=20,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "Eres un asistente que responde preguntas en español. "
+                            "Responde solo con la respuesta correcta, sin explicaciones."
+                        ),
+                    },
+                    {
+                        "role": "user",
+                        "content": f"Pregunta: {question}",
+                    },
+                ],
+            )
+
+            # Raw model output
+            model_output = response.choices[0].message.content.strip()
+
+            # Normalize
+            normalized_output = model_output.lower()
+            correct_answer_clean = correct_answer.strip().lower()
+
+            is_right = normalized_output == correct_answer_clean
+            total += 1
+            correct += int(is_right)
+
+            print(
+                f"Q{total}: {question}\n"
+                f"  Model said: {model_output}\n"
+                f"  Interpreted as: {normalized_output}\n"
+                f"  Correct answer: {correct_answer_clean}\n"
+                f"  Result: {'✅ Correct' if is_right else '❌ Wrong'}\n"
+            )
+
+    print(f"Final Accuracy: {correct}/{total} = {correct / total:.1%}")
+
+
+def mcq_reasoning(client, path="suite/mcq_reasoning.jsonl", model="mistral:latest"):
+    letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    total = 0
+    correct = 0
+
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            data = json.loads(line)
+            task, context, question, choices, correct_answer = itemgetter(
+                "task", "context", "question", "choices", "answer"
+            )(data)
+
+            # Label choices A), B), C)...
+            labeled = [f"{letters[i]}) {opt}" for i, opt in enumerate(choices)]
+            letter_map = {letters[i]: choices[i] for i in range(len(choices))}
+
+            # Ask the model
+            response = client.chat.completions.create(
+                model=model,
+                temperature=0,
+                max_tokens=5,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "Eres un asistente que responde preguntas de opción múltiple en español. "
+                            "Responde SOLO con la letra de la opción correcta (A, B, C, ...). "
+                            "No expliques tu razonamiento."
+                        ),
+                    },
+                    {
+                        "role": "user",
+                        "content": (
+                            f"Contexto: {context}\n"
+                            f"Pregunta: {question}\n"
+                            "Opciones:\n" + "\n".join(labeled) + "\n"
+                            "Respuesta (solo la letra):"
+                        ),
+                    },
+                ],
+            )
+
+            # Raw model output
+            model_output = response.choices[0].message.content.strip()
+
+            # Normalize: convert letter → choice text if possible
+            letter = None
+            if model_output and len(model_output) >= 1:
+                first_char = model_output[0].upper()
+                if first_char in letter_map:
+                    letter = first_char
+
+            normalized_output = (letter_map[letter] if letter else model_output).strip().lower()
+
+            # Normalize correct answer
+            correct_answer_clean = correct_answer.strip().lower()
+
+            is_right = normalized_output == correct_answer_clean
+            total += 1
+            correct += int(is_right)
+
+            print(
+                f"Q{total}: {question}\n"
+                f"  Model said: {model_output}\n"
+                f"  Interpreted as: {normalized_output}\n"
+                f"  Correct answer: {correct_answer_clean}\n"
+                f"  Result: {'✅ Correct' if is_right else '❌ Wrong'}\n"
+            )
+
+    print(f"Final Accuracy: {correct}/{total} = {correct / total:.1%}")
+
+
+def reading_comprehension(
+    client, path="suite/reading_comprehension.jsonl", model="mistral:latest"
+):
+    total = 0
+    correct = 0
+
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            data = json.loads(line)
+            task, context, question, correct_answer = itemgetter(
+                "task", "context", "question", "answer"
+            )(data)
+
+            # Ask the model
+            response = client.chat.completions.create(
+                model=model,
+                temperature=0,
+                max_tokens=100,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "Eres un asistente que responde preguntas de comprensión lectora en español. "
+                            "Responde solo con la respuesta correcta, sin explicaciones."
+                        ),
+                    },
+                    {
+                        "role": "user",
+                        "content": (f"Contexto: {context}\nPregunta: {question}"),
+                    },
+                ],
+            )
+
+            # Raw model output
+            model_output = response.choices[0].message.content.strip()
+
+            # Normalize
+            normalized_output = model_output.lower()
+            correct_answer_clean = correct_answer.strip().lower()
+
+            is_right = normalized_output == correct_answer_clean
+            total += 1
+            correct += int(is_right)
+
+            print(
+                f"Q{total}: {question}\n"
+                f"  Model said: {model_output}\n"
+                f"  Interpreted as: {normalized_output}\n"
+                f"  Correct answer: {correct_answer_clean}\n"
+                f"  Result: {'✅ Correct' if is_right else '❌ Wrong'}\n"
+            )
+
+    print(f"Final Accuracy: {correct}/{total} = {correct / total:.1%}")
+
 
 def main():
-    output_path = "results.csv"
-    with open(output_path, "w", newline="", encoding="utf-8") as results_csv:
-        writer = csv.writer(results_csv)
-        writer.writerow(["Word", "LLM Definition", "Actual Definition", "LLM Judgment (RAW)", "Is Correct"])
-        with open("words.txt", "r", encoding="utf-8") as f:
-            for raw_word in (w for line in f for w in line.split()):
-                word = raw_word.strip()
-                if not word:
-                    continue
-
-                actual_definition = dictionary_lookup.get(word)
-                if not actual_definition:
-                    continue
-
-                llm_definition = get_llm_definition(word)
-                judgment_raw = llm_judges_itself(llm_definition, actual_definition, word)
-                is_correct = llm_judges_itself_bool(llm_definition, actual_definition, word)
-
-                writer.writerow([word, llm_definition, actual_definition, judgment_raw, is_correct])
-    print(f"\nResults written to {output_path}")
+    client = OpenAI(
+        base_url="http://localhost:11434/v1",
+        api_key="ollama",
+    )
+    model = "phi3:3.8b"
+    mcq_reasoning(client=client, model=model)
+    reading_comprehension(client=client, model=model)
+    everyday_qa(client=client, model=model)
+    cloze_mcq(client=client, model=model)
 
 
 if __name__ == "__main__":

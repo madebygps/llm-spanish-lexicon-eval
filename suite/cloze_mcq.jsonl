@@ -1,0 +1,5 @@
+{"task": "cloze_mcq", "question": "El perro _____ en el jardín.", "choices": ["corre", "lee", "canta", "nada"], "answer": "corre"}
+{"task": "cloze_mcq", "question": "Necesito una taza de _____ por la mañana.", "choices": ["agua", "café", "pan", "jugo"], "answer": "café"}
+{"task": "cloze_mcq", "question": "La nieve es de color _____.", "choices": ["rojo", "azul", "blanco", "negro"], "answer": "blanco"}
+{"task": "cloze_mcq", "question": "El médico trabaja en un _____.", "choices": ["hospital", "restaurante", "teatro", "museo"], "answer": "hospital"}
+{"task": "cloze_mcq", "question": "María toca la guitarra todos los _____.", "choices": ["lunes", "perros", "platos", "árboles"], "answer": "lunes"}
