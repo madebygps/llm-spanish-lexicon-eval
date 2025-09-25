@@ -3,34 +3,23 @@ from operator import itemgetter
 from openai import OpenAI
 
 
-def vocabulary_definitions(client, path="suite/vocabulary_complete.json", model="mistral:latest"):
-    """Test model's ability to choose correct Spanish definitions from multiple choices."""
-    import random
-    
-    total = 0
-    correct = 0
 
-    # Load all vocabulary questions
+def iterate_over_words(path="suite/vocabulary_complete.json"):
     with open(path, encoding="utf-8") as f:
         vocabulary_data = json.load(f)
+    for word in vocabulary_data:
+        ask_model_to_define_word(word)
+        
+
+
+def ask_model_to_define_word(word):
+    """Test model's ability to choose correct Spanish definitions from multiple choices."""
     
-    # Take a random sample for testing (20 questions is reasonable)
-    sample_size = min(20, len(vocabulary_data))
-    test_items = random.sample(vocabulary_data, sample_size)
+    promptA = f"Dime la definición de la palabra '{word}'"
+    promptb = f"Escribe dos frases, una con la palabra '{word}', y otra que no contenga esa palabra, pero que esté relacionada con la primera y complemente su significado."
 
-    for item in test_items:
-        word = item["word"]
-        question = item["question"]
-        choices = item["choices"].copy()  # Make a copy to avoid modifying original
-        correct_answer = item["answer"]
-        
-        # Shuffle choices to randomize correct answer position
-        random.shuffle(choices)
-        
-        # Format choices
-        choices_text = "\n".join([f"{i+1}. {choice}" for i, choice in enumerate(choices)])
-
-        response = client.chat.completions.create(
+    
+    response = client.chat.completions.create(
             model=model,
             temperature=0,
             max_tokens=50,
@@ -53,54 +42,39 @@ def vocabulary_definitions(client, path="suite/vocabulary_complete.json", model=
             ],
         )
 
-        model_output = response.choices[0].message.content.strip().lower()
-        correct_answer_clean = correct_answer.strip().lower()
+    model_output = response.choices[0].message.content.strip().lower()
+    
+    return model_output
 
-        # Check if model's response matches the correct answer
-        is_right = False
-        
-        # Handle numbered responses (e.g., "1", "2", "3", "4")
-        if model_output.strip().isdigit():
-            choice_num = int(model_output.strip())
-            if 1 <= choice_num <= len(choices):
-                selected_choice = choices[choice_num - 1].strip().lower()
-                if selected_choice == correct_answer_clean:
-                    is_right = True
-        
-        # Handle responses that start with a number (e.g., "1.", "2)", "1 -")
-        else:
-            first_word = model_output.split()[0] if model_output.split() else ""
-            # Extract number from patterns like "1.", "2)", "3-", etc.
-            import re
-            number_match = re.match(r'^(\d+)', first_word)
-            if number_match:
-                choice_num = int(number_match.group(1))
-                if 1 <= choice_num <= len(choices):
-                    selected_choice = choices[choice_num - 1].strip().lower()
-                    if selected_choice == correct_answer_clean:
-                        is_right = True
-        
-        # Find which position the correct answer ended up in after shuffling
-        correct_position = -1
-        for i, choice in enumerate(choices):
-            if choice.strip().lower() == correct_answer_clean:
-                correct_position = i + 1
-                break
 
-        total += 1
-        correct += int(is_right)
+def ask_model_to_use_word_in_sentences(word):
+    """Test model's ability to use a word in contextually relevant sentences."""
+    
+    prompt = f"Escribe dos frases, una con la palabra '{word}', y otra que no contenga esa palabra, pero que esté relacionada con la primera y complemente su significado."
 
-        print(
-            f"Q{total}: {word} - {question}\n"
-            f"  Model said: {model_output}\n"
-            f"  Correct answer was option #{correct_position}: {correct_answer_clean[:60]}...\n"
-            f"  Result: {'✅ Correct' if is_right else '❌ Wrong'}\n"
+    response = client.chat.completions.create(
+            model=model,
+            temperature=0,
+            max_tokens=100,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Lee la instrucción y genera dos frases en español según lo solicitado."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
+                },
+            ],
         )
 
-    accuracy = correct / total if total > 0 else 0
-    print(f"Final Accuracy: {correct}/{total} = {accuracy:.1%}")
-    return accuracy
-
+        model_output = response.choices[0].message.content.strip()
+        
+      
+    
+    return model_output
 def main():
     client = OpenAI(
         base_url="http://localhost:11434/v1",
@@ -110,9 +84,9 @@ def main():
     
     
     print("\n📚 Vocabulary Definitions Test:")
-    vocab_score = vocabulary_definitions(client=client, model=model)
+    answer= vocabulary_definitions(client=client, model=model)
     
-    print(f"\nOverall Vocabulary Definitions Accuracy: {vocab_score:.1%}")
+    print(f"\nOverall Vocabulary Definitions Accuracy: {answer:.1%}")
 
 
 if __name__ == "__main__":
