@@ -1,1 +1,0 @@
-Escribe dos frases, una con la palabra ‘<palabra>’, y otra que no contenga esa palabra, pero que esté relacionada con la primera y complemente su significado.
