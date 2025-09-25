@@ -1,1102 +1,402 @@
 [
   {
     "word": "acelguilla",
-    "question": "¿Cuál es la definición correcta de 'acelguilla'?",
-    "choices": [
-      "Se da este nombre a las plantas Statice costae y echioides. También acelguilla silvestre y acelguilla espinosa, respectivamente.",
-      "Herramienta agrícola utilizada para cortar hierbas y plantas pequeñas en terrenos difíciles.",
-      "Tipo de insecto que vive en zonas húmedas y se alimenta de materia vegetal en descomposición.",
-      "Variedad de queso fresco elaborado tradicionalmente en las regiones montañosas del norte de España."
-    ],
     "answer": "Se da este nombre a las plantas Statice costae y echioides. También acelguilla silvestre y acelguilla espinosa, respectivamente."
   },
   {
     "word": "agüista",
-    "question": "¿Cuál es la definición correcta de 'agüista'?",
-    "choices": [
-      "Persona que asiste a un establecimiento de aguas mineromedicinales con fines curativos.",
-      "Profesional especializado en el tratamiento y purificación de aguas contaminadas.",
-      "Deportista que practica deportes acuáticos como natación o waterpolo profesionalmente.",
-      "Trabajador encargado del mantenimiento de sistemas de riego en zonas agrícolas."
-    ],
     "answer": "Persona que asiste a un establecimiento de aguas mineromedicinales con fines curativos."
   },
   {
     "word": "antidiarreico",
-    "question": "¿Cuál es la definición correcta de 'antidiarreico'?",
-    "choices": [
-      "Que combate la diarrea. El arándano tiene propiedades antidiarreicas.",
-      "Que previene las infecciones intestinales causadas por bacterias o virus.",
-      "Que estimula el proceso digestivo y mejora la absorción de nutrientes.",
-      "Que reduce la acidez estomacal y alivia los síntomas de la gastritis."
-    ],
     "answer": "Que combate la diarrea. El arándano tiene propiedades antidiarreicas."
   },
   {
     "word": "ardilla",
-    "question": "¿Cuál es la definición correcta de 'ardilla'?",
-    "choices": [
-      "Mamífero roedor, de unos 20 cm de largo, de color negro rojizo por el lomo, blanco por el vientre y con cola muy poblada.",
-      "Ave pequeña que construye nidos en los árboles y se alimenta principalmente de semillas y frutos secos.",
-      "Reptil de pequeño tamaño que vive en madrigueras subterráneas y hiberna durante el invierno.",
-      "Insecto volador que poliniza las flores y produce miel en colmenas organizadas socialmente."
-    ],
     "answer": "Mamífero roedor, de unos 20 cm de largo, de color negro rojizo por el lomo, blanco por el vientre y con cola muy poblada."
   },
   {
     "word": "corbata",
-    "question": "¿Cuál es la definición correcta de 'corbata'?",
-    "choices": [
-      "Prenda de adorno, especialmente masculina, consistente en una banda larga y estrecha que se coloca alrededor del cuello.",
-      "Accesorio femenino decorativo que se lleva en la muñeca o el tobillo como ornamento.",
-      "Pieza de ropa interior que se usa debajo de la camisa para absorber la transpiración.",
-      "Calzado formal de cuero que se usa en ocasiones especiales y eventos elegantes."
-    ],
     "answer": "Prenda de adorno, especialmente masculina, consistente en una banda larga y estrecha que se coloca alrededor del cuello."
   },
   {
     "word": "coliseo",
-    "question": "¿Cuál es la definición correcta de 'coliseo'?",
-    "choices": [
-      "Sala construida para espectáculos públicos.",
-      "Edificio religioso donde se celebran ceremonias y servicios litúrgicos.",
-      "Establecimiento comercial donde se venden productos alimenticios y bebidas.",
-      "Institución educativa donde se imparten clases y se realizan actividades académicas."
-    ],
     "answer": "Sala construida para espectáculos públicos."
   },
   {
     "word": "conspirar",
-    "question": "¿Cuál es la definición correcta de 'conspirar'?",
-    "choices": [
-      "Dicho de varias personas: Unirse contra su superior o soberano.",
-      "Competir de manera desleal para obtener ventajas económicas o políticas.",
-      "Negociar secretamente acuerdos comerciales que beneficien a todas las partes.",
-      "Colaborar abiertamente en proyectos que requieren esfuerzo conjunto y coordinado."
-    ],
     "answer": "Dicho de varias personas: Unirse contra su superior o soberano."
   },
   {
     "word": "dactiloscopia",
-    "question": "¿Cuál es la definición correcta de 'dactiloscopia'?",
-    "choices": [
-      "Estudio de las impresiones dactilares, utilizadas para la identificación de las personas.",
-      "Técnica médica para examinar y diagnosticar enfermedades de los dedos y las manos.",
-      "Método de escritura rápida utilizando únicamente los dedos para crear símbolos y abreviaciones.",
-      "Arte de crear esculturas pequeñas y detalladas utilizando únicamente las manos como herramientas."
-    ],
     "answer": "Estudio de las impresiones dactilares, utilizadas para la identificación de las personas."
   },
   {
     "word": "funcionario",
-    "question": "¿Cuál es la definición correcta de 'funcionario'?",
-    "choices": [
-      "Persona que desempeña profesionalmente un empleo público.",
-      "Empleado de una empresa privada que ocupa un cargo de responsabilidad directiva.",
-      "Profesional independiente que ofrece servicios de consultoría a diferentes organizaciones.",
-      "Trabajador temporal que realiza tareas específicas durante períodos determinados."
-    ],
     "answer": "Persona que desempeña profesionalmente un empleo público."
   },
   {
     "word": "giroscopio",
-    "question": "¿Cuál es la definición correcta de 'giroscopio'?",
-    "choices": [
-      "Disco que, en movimiento de rotación, conserva su eje invariable aunque cambie la dirección de su soporte.",
-      "Instrumento óptico que permite observar objetos lejanos con gran precisión y claridad.",
-      "Dispositivo electrónico que mide la temperatura y la humedad del ambiente circundante.",
-      "Aparato mecánico que convierte el movimiento rotatorio en movimiento lineal alternativo."
-    ],
     "answer": "Disco que, en movimiento de rotación, conserva su eje invariable aunque cambie la dirección de su soporte."
   },
   {
     "word": "magnolia",
-    "question": "¿Cuál es la definición correcta de 'magnolia'?",
-    "choices": [
-      "Árbol de la familia de las magnoliáceas, de 15 a 30 m de altura, con flores hermosas, terminales, solitarias, muy blancas.",
-      "Arbusto ornamental de hojas pequeñas y flores rojas que se cultiva en jardines mediterráneos.",
-      "Planta trepadora de rápido crecimiento que produce frutos comestibles de color púrpura.",
-      "Hierba aromática utilizada en la cocina tradicional para condimentar carnes y pescados."
-    ],
     "answer": "Árbol de la familia de las magnoliáceas, de 15 a 30 m de altura, con flores hermosas, terminales, solitarias, muy blancas."
   },
   {
     "word": "mestizo",
-    "question": "¿Cuál es la definición correcta de 'mestizo'?",
-    "choices": [
-      "Dicho de una persona: Nacida de padre y madre de raza diferente, en especial de hombre blanco y mujer indígena.",
-      "Persona que domina perfectamente dos o más idiomas desde la infancia.",
-      "Individuo que practica religiones diferentes según las circunstancias sociales o familiares.",
-      "Ciudadano que posee nacionalidad de dos países diferentes por nacimiento o naturalización."
-    ],
     "answer": "Dicho de una persona: Nacida de padre y madre de raza diferente, en especial de hombre blanco y mujer indígena."
   },
   {
     "word": "ovni",
-    "question": "¿Cuál es la definición correcta de 'ovni'?",
-    "choices": [
-      "Objeto volador no identificado, al que en ocasiones se considera como una nave espacial de procedencia extraterrestre.",
-      "Vehículo aéreo militar diseñado para misiones de reconocimiento y vigilancia secreta.",
-      "Globo meteorológico utilizado para estudiar las condiciones atmosféricas en las capas altas.",
-      "Satélite artificial que orbita la Tierra para comunicaciones o investigación científica."
-    ],
     "answer": "Objeto volador no identificado, al que en ocasiones se considera como una nave espacial de procedencia extraterrestre."
   },
   {
     "word": "pagar",
-    "question": "¿Cuál es la definición correcta de 'pagar'?",
-    "choices": [
-      "Dicho de una persona: Dar a otra, o satisfacer, lo que le debe.",
-      "Recibir una cantidad de dinero como compensación por servicios prestados.",
-      "Solicitar un préstamo bancario para financiar una compra importante.",
-      "Invertir dinero en acciones o bonos con la expectativa de obtener ganancias."
-    ],
     "answer": "Dicho de una persona: Dar a otra, o satisfacer, lo que le debe."
   },
   {
     "word": "rememorar",
-    "question": "¿Cuál es la definición correcta de 'rememorar'?",
-    "choices": [
-      "Recordar, pasar a tener en la mente algo del pasado.",
-      "Planificar cuidadosamente actividades futuras basándose en experiencias anteriores.",
-      "Documentar eventos importantes para preservar la historia familiar o institucional.",
-      "Celebrar aniversarios y fechas significativas mediante ceremonias especiales."
-    ],
     "answer": "Recordar, pasar a tener en la mente algo del pasado."
   },
   {
     "word": "apealar",
-    "question": "¿Cuál es la definición correcta de 'apealar'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Chile y Méx. manganear.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Chile y Méx. manganear."
   },
   {
     "word": "apparat",
-    "question": "¿Cuál es la definición correcta de 'apparat'?",
-    "choices": [
-      "Transmitir información importante a otras personas mediante diferentes medios.",
-      "Dispositivo electrónico que permite la comunicación a larga distancia mediante ondas.",
-      "Aparato [de un gobierno o de un partido]. Normalmente referido al Partido Comunista.",
-      "Instrumento mecánico empleado para medir distancias y ángulos con gran precisión."
-    ],
     "answer": "Aparato [de un gobierno o de un partido]. Normalmente referido al Partido Comunista."
   },
   {
     "word": "arante",
-    "question": "¿Cuál es la definición correcta de 'arante'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "alerce africano.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "alerce africano."
   },
   {
     "word": "bátavo",
-    "question": "¿Cuál es la definición correcta de 'bátavo'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Natural de Batavia, país de la Europa antigua. U. t. c. s.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Natural de Batavia, país de la Europa antigua. U. t. c. s."
   },
   {
     "word": "bicicross",
-    "question": "¿Cuál es la definición correcta de 'bicicross'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Dispositivo electrónico que permite la comunicación a larga distancia mediante ondas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Dep. Modalidad de ciclismo que se practica en terrenos o circuitos accidentados."
-    ],
     "answer": "Dep. Modalidad de ciclismo que se practica en terrenos o circuitos accidentados."
   },
   {
     "word": "bifocal",
-    "question": "¿Cuál es la definición correcta de 'bifocal'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Ópt. Dicho principalmente de una lente: Que tiene dos focos, con el fin de corregir la visión a corta y a larga distancia."
-    ],
     "answer": "Ópt. Dicho principalmente de una lente: Que tiene dos focos, con el fin de corregir la visión a corta y a larga distancia."
   },
   {
     "word": "cantautor",
-    "question": "¿Cuál es la definición correcta de 'cantautor'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Utensilio de cocina fabricado en metal que se usa para preparar y servir alimentos.",
-      "y f. Cantante, por lo común solista, que suele ser autor de las composiciones que interpreta, en las que prevalece sobre la música un mensaje de intención crítica o poética."
-    ],
     "answer": "y f. Cantante, por lo común solista, que suele ser autor de las composiciones que interpreta, en las que prevalece sobre la música un mensaje de intención crítica o poética."
   },
   {
     "word": "cantinero",
-    "question": "¿Cuál es la definición correcta de 'cantinero'?",
-    "choices": [
-      "Profesional que se dedica a la enseñanza de materias académicas en instituciones educativas.",
-      "y f. Persona que tiene cantina (‖ establecimiento público).",
-      "Funcionario encargado de hacer cumplir las leyes y mantener el orden público.",
-      "Trabajador especializado en la reparación y mantenimiento de equipos electrónicos."
-    ],
     "answer": "y f. Persona que tiene cantina (‖ establecimiento público)."
   },
   {
     "word": "cartulina",
-    "question": "¿Cuál es la definición correcta de 'cartulina'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Cartón delgado, generalmente terso, que se usa para tarjetas, diplomas y cosas análogas.",
-      "Zona geográfica caracterizada por condiciones climáticas y paisajes específicos."
-    ],
     "answer": "Cartón delgado, generalmente terso, que se usa para tarjetas, diplomas y cosas análogas."
   },
   {
     "word": "centavo",
-    "question": "¿Cuál es la definición correcta de 'centavo'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "centésimo (‖ que es una de las cien partes de un todo).",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "centésimo (‖ que es una de las cien partes de un todo)."
   },
   {
     "word": "cerebrotónico",
-    "question": "¿Cuál es la definición correcta de 'cerebrotónico'?",
-    "choices": [
-      "Funcionario encargado de hacer cumplir las leyes y mantener el orden público.",
-      "Profesional que se dedica a la enseñanza de materias académicas en instituciones educativas.",
-      "Persona especializada en el cuidado y tratamiento de enfermedades en animales domésticos.",
-      "(Psicol) [Tipo psíquico] caracterizado por la inhibición y la introversión. También referido a la persona que corresponde a este tipo."
-    ],
     "answer": "(Psicol) [Tipo psíquico] caracterizado por la inhibición y la introversión. También referido a la persona que corresponde a este tipo."
   },
   {
     "word": "chalaza",
-    "question": "¿Cuál es la definición correcta de 'chalaza'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Cada uno de los dos filamentos que sostienen la yema del huevo en medio de la clara.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Cada uno de los dos filamentos que sostienen la yema del huevo en medio de la clara."
   },
   {
     "word": "chigüire",
-    "question": "¿Cuál es la definición correcta de 'chigüire'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Ven. carpincho.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "Ven. carpincho."
   },
   {
     "word": "corralero",
-    "question": "¿Cuál es la definición correcta de 'corralero'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Perteneciente o relativo al corral."
-    ],
     "answer": "Perteneciente o relativo al corral."
   },
   {
     "word": "cosmotrón",
-    "question": "¿Cuál es la definición correcta de 'cosmotrón'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "(Física) Acelerador de partículas que confiere a estas una energía comparable a la de las partículas de los rayos cósmicos.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "(Física) Acelerador de partículas que confiere a estas una energía comparable a la de las partículas de los rayos cósmicos."
   },
   {
     "word": "crístico",
-    "question": "¿Cuál es la definición correcta de 'crístico'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "De Cristo.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "De Cristo."
   },
   {
     "word": "cuentapartícipe",
-    "question": "¿Cuál es la definición correcta de 'cuentapartícipe'?",
-    "choices": [
-      "Persona que tiene participación en los beneficios de una renta inmobiliaria.",
-      "Persona especializada en el cuidado y tratamiento de enfermedades en animales domésticos.",
-      "Trabajador especializado en la reparación y mantenimiento de equipos electrónicos.",
-      "Profesional que se dedica a la enseñanza de materias académicas en instituciones educativas."
-    ],
     "answer": "Persona que tiene participación en los beneficios de una renta inmobiliaria."
   },
   {
     "word": "dabuti",
-    "question": "¿Cuál es la definición correcta de 'dabuti'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Herramienta manual utilizada en trabajos de carpintería y construcción para cortar madera.",
-      "(jergal) De buti o magnífico. Tb adv."
-    ],
     "answer": "(jergal) De buti o magnífico. Tb adv."
   },
   {
     "word": "deformabilidad",
-    "question": "¿Cuál es la definición correcta de 'deformabilidad'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Cualidad de deformable.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Cualidad de deformable."
   },
   {
     "word": "desinfección",
-    "question": "¿Cuál es la definición correcta de 'desinfección'?",
-    "choices": [
-      "Transmitir información importante a otras personas mediante diferentes medios.",
-      "Realizar una acción repetitiva con el objetivo de mejorar una habilidad específica.",
-      "Acción y efecto de desinfectar.",
-      "Organizar elementos de manera sistemática para facilitar su uso posterior."
-    ],
     "answer": "Acción y efecto de desinfectar."
   },
   {
     "word": "desinsectación",
-    "question": "¿Cuál es la definición correcta de 'desinsectación'?",
-    "choices": [
-      "Acción y efecto de desinsectar.",
-      "Organizar elementos de manera sistemática para facilitar su uso posterior.",
-      "Transmitir información importante a otras personas mediante diferentes medios.",
-      "Examinar cuidadosamente algo para determinar su estado o funcionamiento."
-    ],
     "answer": "Acción y efecto de desinsectar."
   },
   {
     "word": "desmitificador",
-    "question": "¿Cuál es la definición correcta de 'desmitificador'?",
-    "choices": [
-      "Animal doméstico de pequeño tamaño que se cría por su carne y sus productos derivados.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Que desmitifica.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Que desmitifica."
   },
   {
     "word": "diligentemente",
-    "question": "¿Cuál es la definición correcta de 'diligentemente'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Transmitir información importante a otras personas mediante diferentes medios.",
-      "1. adv. De manera diligente."
-    ],
     "answer": "1. adv. De manera diligente."
   },
   {
     "word": "emparejador",
-    "question": "¿Cuál es la definición correcta de 'emparejador'?",
-    "choices": [
-      "Trabajador especializado en la reparación y mantenimiento de equipos electrónicos.",
-      "Persona especializada en el cuidado y tratamiento de enfermedades en animales domésticos.",
-      "Profesional que se dedica a la enseñanza de materias académicas en instituciones educativas.",
-      "y f. Persona que empareja."
-    ],
     "answer": "y f. Persona que empareja."
   },
   {
     "word": "empurpurado",
-    "question": "¿Cuál es la definición correcta de 'empurpurado'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Vestido de púrpura.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Vestido de púrpura."
   },
   {
     "word": "epifito",
-    "question": "¿Cuál es la definición correcta de 'epifito'?",
-    "choices": [
-      "Árbol frutal de origen mediterráneo que se cultiva por sus frutos comestibles y aceite.",
-      "Insecto volador que se alimenta del néctar de las flores y contribuye a la polinización.",
-      "Bot. Dicho de un vegetal: Que vive sobre otra planta, sin alimentarse a expensas de esta; p. ej., los musgos y líquenes.",
-      "Animal doméstico de pequeño tamaño que se cría por su carne y sus productos derivados."
-    ],
     "answer": "Bot. Dicho de un vegetal: Que vive sobre otra planta, sin alimentarse a expensas de esta; p. ej., los musgos y líquenes."
   },
   {
     "word": "escorar",
-    "question": "¿Cuál es la definición correcta de 'escorar'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Mar. Apuntalar con escoras."
-    ],
     "answer": "Mar. Apuntalar con escoras."
   },
   {
     "word": "estadista",
-    "question": "¿Cuál es la definición correcta de 'estadista'?",
-    "choices": [
-      "Persona especializada en el cuidado y tratamiento de enfermedades en animales domésticos.",
-      "Trabajador especializado en la reparación y mantenimiento de equipos electrónicos.",
-      "Profesional que se dedica a la enseñanza de materias académicas en instituciones educativas.",
-      "y f. Persona con gran saber y experiencia en los asuntos del Estado."
-    ],
     "answer": "y f. Persona con gran saber y experiencia en los asuntos del Estado."
   },
   {
     "word": "esteatosis",
-    "question": "¿Cuál es la definición correcta de 'esteatosis'?",
-    "choices": [
-      "Med. Acumulación patológica de grasa intracelular en un órgano.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "Med. Acumulación patológica de grasa intracelular en un órgano."
   },
   {
     "word": "estuco",
-    "question": "¿Cuál es la definición correcta de 'estuco'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Masa de yeso blanco y agua de cola, con la cual se hacen y preparan objetos que después se doran o pintan.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Masa de yeso blanco y agua de cola, con la cual se hacen y preparan objetos que después se doran o pintan."
   },
   {
     "word": "exequias",
-    "question": "¿Cuál es la definición correcta de 'exequias'?",
-    "choices": [
-      "pl. Honras fúnebres.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "pl. Honras fúnebres."
   },
   {
     "word": "faisánido",
-    "question": "¿Cuál es la definición correcta de 'faisánido'?",
-    "choices": [
-      "(Zoología) Fasiánido. Tb n. Frec como n, m o f, en pl, designando este taxón zoológico.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "(Zoología) Fasiánido. Tb n. Frec como n, m o f, en pl, designando este taxón zoológico."
   },
   {
     "word": "fétido",
-    "question": "¿Cuál es la definición correcta de 'fétido'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "hediondo (‖ que despide hedor).",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "hediondo (‖ que despide hedor)."
   },
   {
     "word": "floración",
-    "question": "¿Cuál es la definición correcta de 'floración'?",
-    "choices": [
-      "Transmitir información importante a otras personas mediante diferentes medios.",
-      "Realizar una acción repetitiva con el objetivo de mejorar una habilidad específica.",
-      "Organizar elementos de manera sistemática para facilitar su uso posterior.",
-      "Acción de florecer."
-    ],
     "answer": "Acción de florecer."
   },
   {
     "word": "fotogramétrico",
-    "question": "¿Cuál es la definición correcta de 'fotogramétrico'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Especialidad de la fotogrametría.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "Especialidad de la fotogrametría."
   },
   {
     "word": "gabato",
-    "question": "¿Cuál es la definición correcta de 'gabato'?",
-    "choices": [
-      "y f. And. Cría menor de un año de los ciervos o de las liebres.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "y f. And. Cría menor de un año de los ciervos o de las liebres."
   },
   {
     "word": "garcilla",
-    "question": "¿Cuál es la definición correcta de 'garcilla'?",
-    "choices": [
-      "Planta herbácea que crece en terrenos húmedos y se utiliza tradicionalmente en medicina popular.",
-      "Animal doméstico de pequeño tamaño que se cría por su carne y sus productos derivados.",
-      "Zona geográfica caracterizada por condiciones climáticas y paisajes específicos.",
-      "Ave semejante a la garza, pero de tamaño menor."
-    ],
     "answer": "Ave semejante a la garza, pero de tamaño menor."
   },
   {
     "word": "helenizante",
-    "question": "¿Cuál es la definición correcta de 'helenizante'?",
-    "choices": [
-      "Que heleniza.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "Que heleniza."
   },
   {
     "word": "hipogino",
-    "question": "¿Cuál es la definición correcta de 'hipogino'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "(Botánica) [Periantio o androceo] que se inserta por debajo del gineceo. También dicho de la flor.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "(Botánica) [Periantio o androceo] que se inserta por debajo del gineceo. También dicho de la flor."
   },
   {
     "word": "incrustar",
-    "question": "¿Cuál es la definición correcta de 'incrustar'?",
-    "choices": [
-      "Embutir en una superficie lisa y dura piedras, metales, maderas, etc., formando dibujos.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Embutir en una superficie lisa y dura piedras, metales, maderas, etc., formando dibujos."
   },
   {
     "word": "intercadencia",
-    "question": "¿Cuál es la definición correcta de 'intercadencia'?",
-    "choices": [
-      "Desigualdad o inconstancia en la conducta o en los afectos.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Desigualdad o inconstancia en la conducta o en los afectos."
   },
   {
     "word": "jaín",
-    "question": "¿Cuál es la definición correcta de 'jaín'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Edificio público destinado a actividades culturales, educativas y de entretenimiento.",
-      "(Relgión or creencia) Jainista. Tambíen nombre."
-    ],
     "answer": "(Relgión or creencia) Jainista. Tambíen nombre."
   },
   {
     "word": "lipotimia",
-    "question": "¿Cuál es la definición correcta de 'lipotimia'?",
-    "choices": [
-      "Med. Pérdida súbita y pasajera del sentido y del movimiento.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Med. Pérdida súbita y pasajera del sentido y del movimiento."
   },
   {
     "word": "manes",
-    "question": "¿Cuál es la definición correcta de 'manes'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "pl. Dioses infernales o almas de los difuntos, considerados benévolos, a los que rendían culto los antiguos romanos."
-    ],
     "answer": "pl. Dioses infernales o almas de los difuntos, considerados benévolos, a los que rendían culto los antiguos romanos."
   },
   {
     "word": "meano",
-    "question": "¿Cuál es la definición correcta de 'meano'?",
-    "choices": [
-      "Instrumento mecánico empleado para medir distancias y ángulos con gran precisión.",
-      "Taurom. Dicho de un toro: Que tiene blanco el pelaje de la zona genital.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Taurom. Dicho de un toro: Que tiene blanco el pelaje de la zona genital."
   },
   {
     "word": "mediar",
-    "question": "¿Cuál es la definición correcta de 'mediar'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Dicho de una cosa: Llegar aproximadamente a su mitad. Mediaba el mes de julio.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "Dicho de una cosa: Llegar aproximadamente a su mitad. Mediaba el mes de julio."
   },
   {
     "word": "mensualizar",
-    "question": "¿Cuál es la definición correcta de 'mensualizar'?",
-    "choices": [
-      "Realizar una acción repetitiva con el objetivo de mejorar una habilidad específica.",
-      "Hacer mensual [algo, esp. un pago].",
-      "Organizar elementos de manera sistemática para facilitar su uso posterior.",
-      "Examinar cuidadosamente algo para determinar su estado o funcionamiento."
-    ],
     "answer": "Hacer mensual [algo, esp. un pago]."
   },
   {
     "word": "mesmerización",
-    "question": "¿Cuál es la definición correcta de 'mesmerización'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "(literario) Hipnotización.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "(literario) Hipnotización."
   },
   {
     "word": "minuto",
-    "question": "¿Cuál es la definición correcta de 'minuto'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "desus. menudo (‖ en monedas pequeñas).",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "desus. menudo (‖ en monedas pequeñas)."
   },
   {
     "word": "mochalero",
-    "question": "¿Cuál es la definición correcta de 'mochalero'?",
-    "choices": [
-      "Persona especializada en el cuidado y tratamiento de enfermedades en animales domésticos.",
-      "Profesional que se dedica a la enseñanza de materias académicas en instituciones educativas.",
-      "Trabajador especializado en la reparación y mantenimiento de equipos electrónicos.",
-      "De Mochales (Guadalajara). Tambien nombre, referido a persona/personal."
-    ],
     "answer": "De Mochales (Guadalajara). Tambien nombre, referido a persona/personal."
   },
   {
     "word": "modisto",
-    "question": "¿Cuál es la definición correcta de 'modisto'?",
-    "choices": [
-      "Examinar cuidadosamente algo para determinar su estado o funcionamiento.",
-      "Transmitir información importante a otras personas mediante diferentes medios.",
-      "Organizar elementos de manera sistemática para facilitar su uso posterior.",
-      "Hombre que se dedica a hacer prendas de vestir o a crear modas o modelos de ropa, principalmente para mujer."
-    ],
     "answer": "Hombre que se dedica a hacer prendas de vestir o a crear modas o modelos de ropa, principalmente para mujer."
   },
   {
     "word": "monásticamente",
-    "question": "¿Cuál es la definición correcta de 'monásticamente'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "De manera monástica.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "De manera monástica."
   },
   {
     "word": "morra",
-    "question": "¿Cuál es la definición correcta de 'morra'?",
-    "choices": [
-      "Parte superior de la cabeza.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Zona geográfica caracterizada por condiciones climáticas y paisajes específicos.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Parte superior de la cabeza."
   },
   {
     "word": "nefólogo",
-    "question": "¿Cuál es la definición correcta de 'nefólogo'?",
-    "choices": [
-      "Persona especializada en el cuidado y tratamiento de enfermedades en animales domésticos.",
-      "(raro) Especialista en nefología.",
-      "Trabajador especializado en la reparación y mantenimiento de equipos electrónicos.",
-      "Funcionario encargado de hacer cumplir las leyes y mantener el orden público."
-    ],
     "answer": "(raro) Especialista en nefología."
   },
   {
     "word": "novatada",
-    "question": "¿Cuál es la definición correcta de 'novatada'?",
-    "choices": [
-      "Establecimiento comercial donde se venden productos alimenticios y artículos de primera necesidad.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "En algunas colectividades, vejamen y molestias que los antiguos hacen a los recién llegados."
-    ],
     "answer": "En algunas colectividades, vejamen y molestias que los antiguos hacen a los recién llegados."
   },
   {
     "word": "paleteo",
-    "question": "¿Cuál es la definición correcta de 'paleteo'?",
-    "choices": [
-      "Examinar cuidadosamente algo para determinar su estado o funcionamiento.",
-      "Realizar una acción repetitiva con el objetivo de mejorar una habilidad específica.",
-      "Acción de paletear.",
-      "Edificio público destinado a actividades culturales, educativas y de entretenimiento."
-    ],
     "answer": "Acción de paletear."
   },
   {
     "word": "palmítico",
-    "question": "¿Cuál es la definición correcta de 'palmítico'?",
-    "choices": [
-      "Árbol frutal de origen mediterráneo que se cultiva por sus frutos comestibles y aceite.",
-      "Animal doméstico de pequeño tamaño que se cría por su carne y sus productos derivados.",
-      "Planta herbácea que crece en terrenos húmedos y se utiliza tradicionalmente en medicina popular.",
-      "(Química) [Ácido] graso presente en muchas grasas animales y vegetales, esp. en el aceite de palma."
-    ],
     "answer": "(Química) [Ácido] graso presente en muchas grasas animales y vegetales, esp. en el aceite de palma."
   },
   {
     "word": "paralogismo",
-    "question": "¿Cuál es la definición correcta de 'paralogismo'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Razonamiento falso."
-    ],
     "answer": "Razonamiento falso."
   },
   {
     "word": "pasarratos",
-    "question": "¿Cuál es la definición correcta de 'pasarratos'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Pasatiempo. Cosa que sirve de diversión o entretenimiento.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "Pasatiempo. Cosa que sirve de diversión o entretenimiento."
   },
   {
     "word": "perrillo",
-    "question": "¿Cuál es la definición correcta de 'perrillo'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Gatillo de las armas de fuego."
-    ],
     "answer": "Gatillo de las armas de fuego."
   },
   {
     "word": "pezuña",
-    "question": "¿Cuál es la definición correcta de 'pezuña'?",
-    "choices": [
-      "Conjunto de los pesuños de una misma pata en los animales ungulados.",
-      "Animal doméstico de pequeño tamaño que se cría por su carne y sus productos derivados.",
-      "Planta herbácea que crece en terrenos húmedos y se utiliza tradicionalmente en medicina popular.",
-      "Insecto volador que se alimenta del néctar de las flores y contribuye a la polinización."
-    ],
     "answer": "Conjunto de los pesuños de una misma pata en los animales ungulados."
   },
   {
     "word": "pinabete",
-    "question": "¿Cuál es la definición correcta de 'pinabete'?",
-    "choices": [
-      "abeto (‖ árbol).",
-      "Árbol frutal de origen mediterráneo que se cultiva por sus frutos comestibles y aceite.",
-      "Planta herbácea que crece en terrenos húmedos y se utiliza tradicionalmente en medicina popular.",
-      "Insecto volador que se alimenta del néctar de las flores y contribuye a la polinización."
-    ],
     "answer": "abeto (‖ árbol)."
   },
   {
     "word": "pitahaya",
-    "question": "¿Cuál es la definición correcta de 'pitahaya'?",
-    "choices": [
-      "Ant., Col., C. Rica, Ec., El Salv., Guat., Hond., Méx., Nic., Perú y Ven. Planta de la familia de las cactáceas, trepadora y de flores encarnadas o blancas según sus variedades. Algunas dan fruto comestible.",
-      "Árbol frutal de origen mediterráneo que se cultiva por sus frutos comestibles y aceite.",
-      "Animal doméstico de pequeño tamaño que se cría por su carne y sus productos derivados.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Ant., Col., C. Rica, Ec., El Salv., Guat., Hond., Méx., Nic., Perú y Ven. Planta de la familia de las cactáceas, trepadora y de flores encarnadas o blancas según sus variedades. Algunas dan fruto comestible."
   },
   {
     "word": "postrar",
-    "question": "¿Cuál es la definición correcta de 'postrar'?",
-    "choices": [
-      "Rendir, humillar o derribar algo.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Rendir, humillar o derribar algo."
   },
   {
     "word": "prédica",
-    "question": "¿Cuál es la definición correcta de 'prédica'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Sermón o plática.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Sermón o plática."
   },
   {
     "word": "prolongador",
-    "question": "¿Cuál es la definición correcta de 'prolongador'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Persona especializada en el cuidado y tratamiento de enfermedades en animales domésticos.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Que prolonga. U. t. c. s."
-    ],
     "answer": "Que prolonga. U. t. c. s."
   },
   {
     "word": "provinciano",
-    "question": "¿Cuál es la definición correcta de 'provinciano'?",
-    "choices": [
-      "Natural o habitante de una provincia, en contraposición al de la capital. U. t. c. s.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "Natural o habitante de una provincia, en contraposición al de la capital. U. t. c. s."
   },
   {
     "word": "puzzle",
-    "question": "¿Cuál es la definición correcta de 'puzzle'?",
-    "choices": [
-      "Herramienta manual utilizada en trabajos de carpintería y construcción para cortar madera.",
-      "Puzle. Rompecabezas.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Puzle. Rompecabezas."
   },
   {
     "word": "quepis",
-    "question": "¿Cuál es la definición correcta de 'quepis'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Gorra cilíndrica o ligeramente cónica, con visera horizontal, que como prenda de uniforme usan los militares en algunos países.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "Gorra cilíndrica o ligeramente cónica, con visera horizontal, que como prenda de uniforme usan los militares en algunos países."
   },
   {
     "word": "raor",
-    "question": "¿Cuál es la definición correcta de 'raor'?",
-    "choices": [
-      "Insecto volador que se alimenta del néctar de las flores y contribuye a la polinización.",
-      "Árbol frutal de origen mediterráneo que se cultiva por sus frutos comestibles y aceite.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Pez marino de pequeño tamaño, piel roja y ojos saltones, de carne muy apreciada (Xyrichthys novacula o Amorphocephalus granulatus)."
-    ],
     "answer": "Pez marino de pequeño tamaño, piel roja y ojos saltones, de carne muy apreciada (Xyrichthys novacula o Amorphocephalus granulatus)."
   },
   {
     "word": "reciclado",
-    "question": "¿Cuál es la definición correcta de 'reciclado'?",
-    "choices": [
-      "Organizar elementos de manera sistemática para facilitar su uso posterior.",
-      "Examinar cuidadosamente algo para determinar su estado o funcionamiento.",
-      "Acción y efecto de reciclar.",
-      "Transmitir información importante a otras personas mediante diferentes medios."
-    ],
     "answer": "Acción y efecto de reciclar."
   },
   {
     "word": "ridiculización",
-    "question": "¿Cuál es la definición correcta de 'ridiculización'?",
-    "choices": [
-      "Realizar una acción repetitiva con el objetivo de mejorar una habilidad específica.",
-      "Acción y efecto de ridiculizar.",
-      "Organizar elementos de manera sistemática para facilitar su uso posterior.",
-      "Transmitir información importante a otras personas mediante diferentes medios."
-    ],
     "answer": "Acción y efecto de ridiculizar."
   },
   {
     "word": "sagum",
-    "question": "¿Cuál es la definición correcta de 'sagum'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "(históico) Capote corto usado por los romanos, esp. en la guerra.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "(históico) Capote corto usado por los romanos, esp. en la guerra."
   },
   {
     "word": "salbanda",
-    "question": "¿Cuál es la definición correcta de 'salbanda'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Ingen. En minería, capa, ordinariamente arcillosa, que separa el filón de la roca estéril."
-    ],
     "answer": "Ingen. En minería, capa, ordinariamente arcillosa, que separa el filón de la roca estéril."
   },
   {
     "word": "socialmente",
-    "question": "¿Cuál es la definición correcta de 'socialmente'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "En el aspecto social. De manera social.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "En el aspecto social. De manera social."
   },
   {
     "word": "speed",
-    "question": "¿Cuál es la definición correcta de 'speed'?",
-    "choices": [
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "1: (jergal) Anfetamina. 2: (jergal) Estado de euforia causado por el consumo de drogas."
-    ],
     "answer": "1: (jergal) Anfetamina. 2: (jergal) Estado de euforia causado por el consumo de drogas."
   },
   {
     "word": "standarizar",
-    "question": "¿Cuál es la definición correcta de 'standarizar'?",
-    "choices": [
-      "Estandarizar. Ajustar [algo o a alguien] a un estándar].",
-      "Trabajador especializado en la reparación y mantenimiento de equipos electrónicos.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Estandarizar. Ajustar [algo o a alguien] a un estándar]."
   },
   {
     "word": "sublimado",
-    "question": "¿Cuál es la definición correcta de 'sublimado'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Quím. Sustancia obtenida por sublimación."
-    ],
     "answer": "Quím. Sustancia obtenida por sublimación."
   },
   {
     "word": "superbomba",
-    "question": "¿Cuál es la definición correcta de 'superbomba'?",
-    "choices": [
-      "(Milicia) Bomba de hidrógeno o de tritio, de potencia superior a la bomba atómica de uranio.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos."
-    ],
     "answer": "(Milicia) Bomba de hidrógeno o de tritio, de potencia superior a la bomba atómica de uranio."
   },
   {
     "word": "talgo",
-    "question": "¿Cuál es la definición correcta de 'talgo'?",
-    "choices": [
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Tipo de tren articulado de muy poco peso, fabricado en diversos modelos.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "Tipo de tren articulado de muy poco peso, fabricado en diversos modelos."
   },
   {
     "word": "tornajo",
-    "question": "¿Cuál es la definición correcta de 'tornajo'?",
-    "choices": [
-      "Árbol frutal de origen mediterráneo que se cultiva por sus frutos comestibles y aceite.",
-      "Planta herbácea que crece en terrenos húmedos y se utiliza tradicionalmente en medicina popular.",
-      "Animal doméstico de pequeño tamaño que se cría por su carne y sus productos derivados.",
-      "(regional) Dornajo (recipiente de madera, hecho gralm. de un tronco ahuecado, que sirve para dar de comer o beber a los animales o para otros usos)."
-    ],
     "answer": "(regional) Dornajo (recipiente de madera, hecho gralm. de un tronco ahuecado, que sirve para dar de comer o beber a los animales o para otros usos)."
   },
   {
     "word": "treinta",
-    "question": "¿Cuál es la definición correcta de 'treinta'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Proceso mental mediante el cual se adquieren y procesan nuevos conocimientos.",
-      "Tres veces diez. U. t. c. pron. —¿Cuántos alumnos tiene? —Treinta.",
-      "Sistema de creencias y valores compartidos por un grupo de personas."
-    ],
     "answer": "Tres veces diez. U. t. c. pron. —¿Cuántos alumnos tiene? —Treinta."
   },
   {
     "word": "tundidor",
-    "question": "¿Cuál es la definición correcta de 'tundidor'?",
-    "choices": [
-      "Dispositivo electrónico que permite la comunicación a larga distancia mediante ondas.",
-      "Herramienta manual utilizada en trabajos de carpintería y construcción para cortar madera.",
-      "Utensilio de cocina fabricado en metal que se usa para preparar y servir alimentos.",
-      "Dicho de una máquina: Que sirve para tundir1. U. t. c. s."
-    ],
     "answer": "Dicho de una máquina: Que sirve para tundir1. U. t. c. s."
   },
   {
     "word": "vega",
-    "question": "¿Cuál es la definición correcta de 'vega'?",
-    "choices": [
-      "Método científico utilizado para investigar y comprender fenómenos naturales.",
-      "Terreno bajo, llano y fértil, regado generalmente por un río o un canal.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad."
-    ],
     "answer": "Terreno bajo, llano y fértil, regado generalmente por un río o un canal."
   },
   {
     "word": "verraquear",
-    "question": "¿Cuál es la definición correcta de 'verraquear'?",
-    "choices": [
-      "Conjunto de normas y principios que regulan el comportamiento en una sociedad.",
-      "Sistema de creencias y valores compartidos por un grupo de personas.",
-      "coloq. Gruñir o dar señales de enfado y enojo.",
-      "Método científico utilizado para investigar y comprender fenómenos naturales."
-    ],
     "answer": "coloq. Gruñir o dar señales de enfado y enojo."
   }
 ]
