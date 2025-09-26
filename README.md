@@ -1,165 +1,134 @@
-# LLM Spanish Lexicon Evaluation
+## LLM Spanish Lexicon Eval
 
-A  evaluation suite for testing Spanish language comprehension and lexical knowledge in Large Language Models (LLMs). Based on Conde et al.
+Evaluate how well local LLMs (via Ollama) handle Spanish vocabulary definitions and contextual sentence usage. Answers are judged automatically by an OpenAI model to compute accuracy metrics for two prompt styles (A: definition, B: two related sentences).
 
-## 🎯 Overview
+### Requirements
 
-This project provides a standardized benchmark for evaluating Spanish language capabilities across multiple domains:
-
-- **Vocabulary Definitions**: MCQ tests with plausible distractors
-- **Reading Comprehension**: Context-based question answering  
-- **MCQ Reasoning**: Logic and inference testing
-- **Cloze Tests**: Fill-in-the-blank sentence completion
-- **Everyday Q&A**: Common knowledge questions
-
-The suite generates weighted scores across all test categories, providing both granular insights and an overall grade (A+ to F) for Spanish comprehension ability.
-
-## 📊 Test Categories
-
-| Test Type | Weight | Description | Example |
-|-----------|--------|-------------|---------|
-| **MCQ Reasoning** | 25% | Context-based logical reasoning | Given a passage, answer inference questions |
-| **Reading Comprehension** | 25% | Text understanding and analysis | Extract specific information from Spanish texts |
-| **Everyday Q&A** | 20% | Common knowledge questions | "¿Cuál es la capital de España?" |
-| **Cloze MCQ** | 15% | Sentence completion tasks | "El perro _____ en el jardín" |
-| **Vocabulary Definitions** | 15% | Word definition matching | Choose correct definition from 4 options |
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.13+
-- OpenAI-compatible API endpoint (OpenAI, Ollama, etc.)
-
-### Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/madebygps/llm-spanish-lexicon-eval.git
-cd llm-spanish-lexicon-eval
+1. Python 3.13+
+2. [uv](https://github.com/astral-sh/uv) for dependency + virtualenv management
+3. Local models pulled into Ollama (e.g. `ollama pull mistral:latest`)
+4. OpenAI API key in a `.env` file at repository root:
+```
+OPENAI_API_KEY=sk-...
 ```
 
-1. Install dependencies:
+### Install deps
 
 ```bash
-pip install -e .
+uv sync  # or: uv add ollama python-dotenv tqdm openai
 ```
 
-### Running Tests
+### Run a quick smoke test
 
-#### For Ollama (Local Models)
-
+Dry run (no model calls):
 ```bash
-# Start Ollama with your preferred model
-ollama pull mistral
+uv run python main.py --dry-run --limit 5
+```
+
+Generate only (skip judging):
+```bash
+uv run python main.py --limit 10 --skip-judge
+```
+
+Judge existing generation (resume):
+```bash
+uv run python main.py --skip-generation --resume
+```
+
+Full evaluation (all models & words):
+```bash
+uv run python main.py
+```
+
+Limit vocab items for faster iteration:
+```bash
+uv run python main.py --limit 25 --models mistral:latest llama3.1:latest
+```
+
+### Outputs
+
+```
+outputs/
+	detailed.jsonl         # All (word, model) records
+	summary.json           # Per-model accuracy percentages
+	<model>/result_<model>.jsonl  # Per-model records
+```
+
+Each JSONL record structure:
+```jsonc
+{
+	"word": "acelguilla",
+	"definition": "... ground truth ...",
+	"model": "mistral:latest",
+	"answer_a": "...",
+	"answer_b": "...",
+	"judge_correct_a": true,
+	"judge_correct_b": false,
+	"judge_reasoning": "YES: ... | NO: ..."
+}
+```
+
+### CLI Options
+
+Run `uv run python main.py --help` for the latest list. Key flags:
+
+* `--limit N` limit vocabulary items
+* `--models m1 m2` subset of models
+* `--skip-generation` skip local model calls
+* `--skip-judge` skip OpenAI judging
+* `--resume` reuse existing JSONL files (append missing judgments)
+* `--openai-model MODEL` change judge model (default: gpt-4o-mini)
+* `--gen-concurrency N` parallel requests per model during generation (default 1)
+
+### Concurrency & Ollama Tuning
+
+This project now supports parallel requests *within a single model* (models still handled one after another) via `--gen-concurrency`.
+
+Example (4 parallel in-flight generations per model):
+```bash
+uv run python main.py --gen-concurrency 4 --limit 50 --models mistral:latest
+```
+
+Server side, adjust Ollama (before starting `ollama serve` or via `~/.ollama/config.json`):
+```json
+{
+	"num_parallel": 4,
+	"max_loaded_models": 1
+}
+```
+or environment variables if manually launching:
+```bash
+export OLLAMA_NUM_PARALLEL=4
+export OLLAMA_MAX_LOADED_MODELS=1
 ollama serve
-
-# Run evaluation
-python main.py
 ```
 
-#### For OpenAI API
+Guidelines:
+* Keep `max_loaded_models=1` initially to avoid memory churn.
+* Increase `num_parallel` (server) to be ≥ `--gen-concurrency` (client) for true concurrency; otherwise excess requests queue.
+* Monitor memory; parallelism expands effective context memory footprint.
 
-```bash
-# Set your API key
-export OPENAI_API_KEY="your-api-key-here"
+If you don't control server startup (daemon already running) edit the config file then restart the service for changes to apply.
 
-# Modify main.py to use OpenAI endpoint
-python main.py
-```
+### Judging Criteria (Summary)
 
-## 📁 Project Structure
+Prompt A: Response must faithfully capture essential meaning of the reference definition (no major omissions or hallucinations).
 
-```text
-llm-spanish-lexicon-eval/
-├── main.py                    # Main evaluation script
-├── generate_vocab_mcq.py      # Vocabulary test generator
-├── words.txt                  # Spanish word list
-├── suite/                     # Test datasets
-│   ├── cloze_mcq.jsonl       # Fill-in-the-blank tests
-│   ├── everyday_qa.jsonl     # Common knowledge Q&A
-│   ├── mcq_reasoning.jsonl   # Logic and reasoning tests
-│   ├── reading_comprehension.jsonl # Text comprehension
-│   └── vocabulary_complete.json # Vocabulary definitions
-├── pyproject.toml            # Project dependencies
-└── README.md                 # This file
-```
+Prompt B: Two coherent sentences — one must use the target word correctly; the other related sentence should complement meaning and stay consistent with the reference.
 
-## 🧪 Test Details
+Judge outputs YES / NO for each variant.
 
-### Vocabulary Definitions
+### Troubleshooting
 
-- **Format**: Multiple choice questions with 4 options
-- **Source**: Spanish dictionary definitions with generated distractors
-- **Sample Size**: 20 random questions per evaluation
-- **Scoring**: Exact match or numbered response recognition
+* Missing Ollama python package: ensure dependencies installed (`uv sync`).
+* Model not found: pull it with `ollama pull <model>`.
+* No OpenAI key: create `.env` with OPENAI_API_KEY.
 
-### Reading Comprehension
+### Next Ideas
 
-- **Format**: Context passage + open-ended questions
-- **Evaluation**: Flexible matching (exact, substring, keyword-based)
-- **Focuses**: Information extraction and text understanding
+* Parallel generation per model (async) for speed.
+* Add caching layer for previously seen (model, prompt) pairs.
+* Precision / recall style grading with more granular rubric.
 
-### MCQ Reasoning
-
-- **Format**: Context + question + 4 multiple choice options
-- **Tests**: Logical inference and critical thinking
-- **Evaluation**: Choice matching with flexible response parsing
-
-### Cloze MCQ
-
-- **Format**: Sentences with missing words + 4 options
-- **Tests**: Grammar, vocabulary, and context understanding
-- **Examples**: "El perro _____ en el jardín" → "corre"
-
-### Everyday Q&A
-
-- **Format**: Direct questions requiring factual knowledge
-- **Topics**: Geography, culture, common sense
-- **Evaluation**: Flexible answer matching with normalization
-
-## 📈 Scoring System
-
-The evaluation produces both detailed per-category results and an overall weighted grade:
-
-### Grade Scale
-
-- **A+ (90-100%)**: Excellent Spanish comprehension
-- **A (80-89%)**: Very good Spanish comprehension  
-- **B (70-79%)**: Good Spanish comprehension
-- **C (60-69%)**: Fair Spanish comprehension
-- **D (50-59%)**: Basic Spanish comprehension
-- **F (0-49%)**: Poor Spanish comprehension
-
-### Sample Output
-
-```text
-📊 FINAL RESULTS
-==================================================
-MCQ Reasoning:         78.5% (weight: 25%)
-Reading Comprehension: 82.1% (weight: 25%)
-Everyday Q&A:          75.3% (weight: 20%)
-Cloze MCQ:             91.2% (weight: 15%)
-Vocabulary Definitions: 68.9% (weight: 15%)
---------------------------------------------------
-🎯 OVERALL GRADE:       78.1%
-📈 Grade: B - Good Spanish comprehension
-```
-
-## 🛠 Configuration
-
-### Model Configuration
-
-Edit `main.py` to modify:
-
-- API endpoint URL
-- Model name
-- Temperature settings
-- Token limits
-
-### Test Customization
-
-- Modify test files in `suite/` directory
-- Adjust weights in the `main()` function
-- Add new test categories by implementing new functions
+---
+Happy evaluating! ✨
