@@ -224,8 +224,10 @@ def run_pipeline() -> int:
 
     summary = aggregate_summary(all_records)
     summary_path = OUTPUTS_DIR / "summary.json"
+    # Convert Pydantic models to plain dicts for JSON serialization
+    summary_payload = [row.model_dump() for row in summary]
     with summary_path.open("w", encoding="utf-8") as f:
-        json.dump(summary, f, ensure_ascii=False, indent=2)
+        json.dump(summary_payload, f, ensure_ascii=False, indent=2)
     return 0
 
 

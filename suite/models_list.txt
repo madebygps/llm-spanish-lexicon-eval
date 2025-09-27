@@ -1,5 +1,5 @@
-solar:10.7b
-mixtral:latest
+#solar:10.7b
+#mixtral:latest
 gemma3:12b       
-mistral:latest 
-llama3.1:latest
+#mistral:latest 
+#llama3.1:latest
