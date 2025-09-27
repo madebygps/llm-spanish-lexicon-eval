@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 import os
 import sys
-from typing import Dict, Iterable, List, Optional, TypedDict
+from typing import Dict, Iterable, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 from ollama import chat as ollama_chat
@@ -41,7 +41,6 @@ class EvalRecord(BaseModel):
     def to_json(self) -> str:
         return json.dumps(self.model_dump(), ensure_ascii=False)
 
-
 class VocabEntry(BaseModel):
     word: str
     answer: str
@@ -53,7 +52,6 @@ class VocabEntry(BaseModel):
             raise ValueError("Vocabulary fields cannot be blank")
         return v.strip()
 
-
 class Prompts(BaseModel):
     prompt_a: str = Field(..., description="Base prompt template for answer A")
 
@@ -63,6 +61,12 @@ class Prompts(BaseModel):
         if "{word}" not in v:
             raise ValueError("prompt_a must contain '{word}' placeholder")
         return v
+
+class SummaryRow(BaseModel):
+    model: str
+    total: int
+    correct: int
+    pct: float
 
 
 def load_suite() -> tuple[List[VocabEntry], Prompts, List[str]]:
@@ -98,11 +102,6 @@ def load_suite() -> tuple[List[VocabEntry], Prompts, List[str]]:
     model_ids = [line.split()[0] for line in model_lines]
 
     return vocabulary, prompts, model_ids
-
-
-def call_model(model: str, prompt: str) -> str:
-    resp = ollama_chat(model=model, messages=[{"role": "user", "content": prompt}])
-    return resp["message"]["content"].strip()
 
 
 def build_model_records(
@@ -157,36 +156,25 @@ def judge_answer(
     return verdict, reasoning
 
 
-class SummaryRow(TypedDict):
-    model: str
-    total: int
-    correct: int
-    pct: float
-
-
 def aggregate_summary(all_records: List[EvalRecord]) -> List[SummaryRow]:
     records_by_model: Dict[str, List[EvalRecord]] = {}
     for record in all_records:
         records_by_model.setdefault(record.model, []).append(record)
-    summary: List[SummaryRow] = []
+    summary_models: List[SummaryRow] = []
     for model_name, records_for_model in records_by_model.items():
         total_records = len(records_for_model)
-        correct_answer_a = sum(
-            1 for record in records_for_model if record.judge_correct_a
-        )
-        percent_correct_a = (
-            (correct_answer_a / total_records * 100) if total_records else 0.0
-        )
-        summary.append(
+        correct_answer_a = sum(1 for record in records_for_model if record.judge_correct_a)
+        percent_correct_a = (correct_answer_a / total_records * 100) if total_records else 0.0
+        summary_models.append(
             SummaryRow(
                 model=model_name,
                 total=total_records,
                 correct=correct_answer_a,
-                pct=float(round(percent_correct_a, 2)),
+                pct=round(percent_correct_a, 2),
             )
         )
-    summary.sort(key=lambda row: row["pct"], reverse=True)  # type: ignore[arg-type]
-    return summary
+    summary_models.sort(key=lambda row: row.pct, reverse=True)
+    return summary_models
 
 
 def write_jsonl(path: Path, records: Iterable[EvalRecord]) -> None:
@@ -198,50 +186,46 @@ def write_jsonl(path: Path, records: Iterable[EvalRecord]) -> None:
 
 
 def run_pipeline() -> int:
+    """Run full pipeline (generate -> optional judge -> summary) with minimal ceremony.
+
+    Keeps validation (Pydantic + load_suite) but strips extraneous branching/printing.
+    """
     load_dotenv()
     vocabulary, prompts, models = load_suite()
+
     all_records: List[EvalRecord] = []
     for model in models:
-        per_model_path = OUTPUTS_DIR / model / f"result_{model.replace(':', '_')}.jsonl"
-        per_model_records = build_model_records(
-            model=model, vocabulary=vocabulary, prompts=prompts
-        )
-        write_jsonl(per_model_path, per_model_records)
-        print(
-            f"[OK] Wrote {len(per_model_records)} records for {model} -> {per_model_path}"
-        )
-        all_records.extend(per_model_records)
+        model_records = build_model_records(model=model, vocabulary=vocabulary, prompts=prompts)
+        all_records.extend(model_records)
+        write_jsonl(OUTPUTS_DIR / model / f"result_{model.replace(':','_')}.jsonl", model_records)
+
     aggregated_path = OUTPUTS_DIR / "detailed.jsonl"
     write_jsonl(aggregated_path, all_records)
-    print(f"[OK] Aggregated detailed records -> {aggregated_path}")
-    if OpenAI is None:
-        print("[ERROR] openai package not installed; cannot judge.", file=sys.stderr)
-        return 1
-    if not os.environ.get(ENV_OPENAI_KEY):
-        print(f"[ERROR] {ENV_OPENAI_KEY} not set; cannot judge.", file=sys.stderr)
-        return 1
-    client = OpenAI()
-    judge_model_name = os.environ.get(ENV_JUDGE_MODEL, DEFAULT_JUDGE_MODEL)
-    to_judge: List[EvalRecord] = [r for r in all_records if r.answer_a is not None]
 
-    if to_judge:
-        for rec in tqdm(to_judge, desc="Judging"):
-            verdict, reasoning = judge_answer(
-                client, judge_model_name, rec.word, rec.definition, rec.answer_a or ""
-            )
+    can_judge = OpenAI is not None and os.environ.get(ENV_OPENAI_KEY)
+    if can_judge:
+        client = OpenAI()  
+        judge_model_name = os.environ.get(ENV_JUDGE_MODEL, DEFAULT_JUDGE_MODEL)
+        for rec in tqdm(all_records, desc="Judging"):
+            verdict, reasoning = judge_answer(client, judge_model_name, rec.word, rec.definition, rec.answer_a or "")
             rec.judge_correct_a = verdict
             rec.judge_reasoning = reasoning
-    write_jsonl(aggregated_path, all_records)
-    for model in models:
-        per_model_path = OUTPUTS_DIR / model / f"result_{model.replace(':', '_')}.jsonl"
-        per_model_records = [rec for rec in all_records if rec.model == model]
-        write_jsonl(per_model_path, per_model_records)
-    print("[OK] Judging complete.")
+        write_jsonl(aggregated_path, all_records)
+        for model in models:
+            write_jsonl(
+                OUTPUTS_DIR / model / f"result_{model.replace(':','_')}.jsonl",
+                (r for r in all_records if r.model == model),
+            )
+    else:
+        if OpenAI is None:
+            print("[WARN] openai not installed; skipping judging.", file=sys.stderr)
+        elif not os.environ.get(ENV_OPENAI_KEY):
+            print(f"[WARN] {ENV_OPENAI_KEY} not set; skipping judging.", file=sys.stderr)
+
     summary = aggregate_summary(all_records)
     summary_path = OUTPUTS_DIR / "summary.json"
     with summary_path.open("w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
-    print(f"[OK] Summary -> {summary_path}")
     return 0
 
 
@@ -249,5 +233,5 @@ def main(_argv: Optional[List[str]] = None) -> int:
     return run_pipeline()
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__": 
     raise SystemExit(main())
