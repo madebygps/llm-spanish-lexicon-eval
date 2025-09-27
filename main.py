@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 import os
 import sys
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, TypedDict
 
 from pydantic import BaseModel, Field, field_validator
 from ollama import chat as ollama_chat
@@ -21,7 +21,6 @@ ENV_JUDGE_MODEL = "JUDGE_MODEL"
 
 class EvalRecord(BaseModel):
     """Single evaluation record for a (word, model) pair.
-
     judge_correct_a / judge_reasoning are populated after judging phase.
     """
 
@@ -34,7 +33,7 @@ class EvalRecord(BaseModel):
 
     @field_validator("word", "definition", "model")
     @classmethod
-    def _not_blank(cls, v: str) -> str: 
+    def _not_blank(cls, v: str) -> str:
         if not v or not v.strip():
             raise ValueError("Value cannot be blank")
         return v.strip()
@@ -42,13 +41,14 @@ class EvalRecord(BaseModel):
     def to_json(self) -> str:
         return json.dumps(self.model_dump(), ensure_ascii=False)
 
+
 class VocabEntry(BaseModel):
     word: str
     answer: str
 
     @field_validator("word", "answer")
     @classmethod
-    def _not_blank(cls, v: str) -> str:  # pragma: no cover
+    def _not_blank(cls, v: str) -> str:
         if not v or not v.strip():
             raise ValueError("Vocabulary fields cannot be blank")
         return v.strip()
@@ -75,23 +75,28 @@ def load_suite() -> tuple[List[VocabEntry], Prompts, List[str]]:
     Raises:
         ValueError if any file content is structurally invalid.
     """
-    with (SUITE_DIR / "vocabulary_short.json").open("r", encoding="utf-8") as f:
-        vocab_raw = json.load(f)
-    if not isinstance(vocab_raw, list):  # pragma: no cover (defensive)
+    with (SUITE_DIR / "vocabulary_short.json").open(
+        "r", encoding="utf-8"
+    ) as vocab_file:
+        vocab_data = json.load(vocab_file)
+    if not isinstance(vocab_data, list):
         raise ValueError("Vocabulary JSON must be a list of objects")
-    vocabulary: List[VocabEntry] = [VocabEntry(**row) for row in vocab_raw]
+    vocabulary: List[VocabEntry] = [VocabEntry(**row) for row in vocab_data]
 
-    with (SUITE_DIR / "prompts.json").open("r", encoding="utf-8") as f:
-        prompts_raw = json.load(f)
-    if not isinstance(prompts_raw, dict):  # pragma: no cover
+    with (SUITE_DIR / "prompts.json").open("r", encoding="utf-8") as prompts_file:
+        prompts_data = json.load(prompts_file)
+    if not isinstance(prompts_data, dict):
         raise ValueError("Prompts JSON must be an object")
-    prompts = Prompts(**prompts_raw)
+    prompts = Prompts(**prompts_data)
 
-    with (SUITE_DIR / "models_list.txt").open("r", encoding="utf-8") as f:
-        raw = [ln.strip() for ln in f if ln.strip() and not ln.strip().startswith("#")]
-    model_ids = [ln.split()[0] for ln in raw]
-    if not model_ids:
-        raise ValueError("No model ids found in models_list.txt")
+    with (SUITE_DIR / "models_list.txt").open("r", encoding="utf-8") as models_file:
+        model_lines = [
+            line.strip()
+            for line in models_file
+            if line.strip() and not line.strip().startswith("#")
+        ]
+    model_ids = [line.split()[0] for line in model_lines]
+
     return vocabulary, prompts, model_ids
 
 
@@ -152,24 +157,35 @@ def judge_answer(
     return verdict, reasoning
 
 
-def aggregate_summary(all_records: List[EvalRecord]) -> List[Dict[str, object]]:
-    by_model: Dict[str, List[EvalRecord]] = {}
-    for r in all_records:
-        by_model.setdefault(r.model, []).append(r)
-    summary = []
-    for model, recs in by_model.items():
-        total = len(recs)
-        correct_a = sum(1 for r in recs if r.judge_correct_a)
-        pct_a = (correct_a / total * 100) if total else 0.0
-        summary.append(
-            {
-                "model": model,
-                "total": total,
-                "correct": correct_a,
-                "pct": round(pct_a, 2),
-            }
+class SummaryRow(TypedDict):
+    model: str
+    total: int
+    correct: int
+    pct: float
+
+
+def aggregate_summary(all_records: List[EvalRecord]) -> List[SummaryRow]:
+    records_by_model: Dict[str, List[EvalRecord]] = {}
+    for record in all_records:
+        records_by_model.setdefault(record.model, []).append(record)
+    summary: List[SummaryRow] = []
+    for model_name, records_for_model in records_by_model.items():
+        total_records = len(records_for_model)
+        correct_answer_a = sum(
+            1 for record in records_for_model if record.judge_correct_a
         )
-    summary.sort(key=lambda x: x["pct"], reverse=True)
+        percent_correct_a = (
+            (correct_answer_a / total_records * 100) if total_records else 0.0
+        )
+        summary.append(
+            SummaryRow(
+                model=model_name,
+                total=total_records,
+                correct=correct_answer_a,
+                pct=float(round(percent_correct_a, 2)),
+            )
+        )
+    summary.sort(key=lambda row: row["pct"], reverse=True)  # type: ignore[arg-type]
     return summary
 
 
