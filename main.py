@@ -18,6 +18,22 @@ DEFAULT_JUDGE_MODEL = "gpt-5"
 ENV_OPENAI_KEY = "OPENAI_API_KEY"
 ENV_JUDGE_MODEL = "JUDGE_MODEL"
 
+
+def get_model_filename(model: str) -> str:
+    """Convert model name to safe filename format."""
+    return model.replace(":", "_")
+
+
+def setup_openai_client() -> tuple[OpenAI | None, str | None]:
+    """Setup OpenAI client and judge model if available."""
+    if OpenAI is None:
+        print("[WARN] OpenAI not installed; skipping judging.", file=sys.stderr)
+        return None, None
+    if not os.environ.get(ENV_OPENAI_KEY):
+        print(f"[WARN] {ENV_OPENAI_KEY} missing; skipping judging.", file=sys.stderr)
+        return None, None
+    return OpenAI(), os.environ.get(ENV_JUDGE_MODEL, DEFAULT_JUDGE_MODEL)
+
 class PipelineResult(BaseModel):
     models: List[str]
     total_records: int
@@ -95,49 +111,49 @@ def build_model_records(
 ) -> List[EvalRecord]:
     records: List[EvalRecord] = []
     for entry in tqdm(vocabulary, desc=f"Generating {model}"):
-        word = entry.word
-        definition = entry.answer
-        prompt_a = prompts.prompt_a.format(word=word)
         try:
             resp = ollama_chat(
-                model=model, messages=[{"role": "user", "content": prompt_a}]
+                model=model, 
+                messages=[{"role": "user", "content": prompts.prompt_a.format(word=entry.word)}]
             )
-            ans_a = resp["message"]["content"].strip()
+            answer_a = resp["message"]["content"].strip()
         except Exception as e:  # pragma: no cover
-            ans_a = f"GENERATION_ERROR: {e}"
-        records.append(
-            EvalRecord(word=word, definition=definition, model=model, answer_a=ans_a)
-        )
+            answer_a = f"GENERATION_ERROR: {e}"
+        
+        records.append(EvalRecord(
+            word=entry.word, 
+            definition=entry.answer, 
+            model=model, 
+            answer_a=answer_a
+        ))
     return records
 
 
 def judge_answer(
     openai_client, openai_model: str, word: str, definition: str, answer: str
 ) -> tuple[bool, str]:
-    system_prompt = (
-        "Evalúa definiciones de vocabulario español. Responde primera línea YES o NO y segunda línea breve justificación. "
-        "YES si captura el significado esencial sin contradicciones. NO si falla la categoría básica y rasgo distintivo, hay contradicción o atributo incompatible. Extra info correcta u omisiones menores de detalle no penalizan."
-    )
-    user_prompt = (
-        f"PALABRA: {word}\n"
-        f"DEFINICION_REFERENCIA: {definition}\n"
-        f"RESPUESTA_MODELO:\n{answer.strip()}\n\n"
-        "Evalúa ahora."
-    )
     try:
         resp = openai_client.chat.completions.create(
             model=openai_model,
             messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
+                {"role": "system", "content": (
+                    "Evalúa definiciones de vocabulario español. Responde primera línea YES o NO y segunda línea breve justificación. "
+                    "YES si captura el significado esencial sin contradicciones. NO si falla la categoría básica y rasgo distintivo, hay contradicción o atributo incompatible. Extra info correcta u omisiones menores de detalle no penalizan."
+                )},
+                {"role": "user", "content": (
+                    f"PALABRA: {word}\n"
+                    f"DEFINICION_REFERENCIA: {definition}\n"
+                    f"RESPUESTA_MODELO:\n{answer.strip()}\n\n"
+                    "Evalúa ahora."
+                )},
             ],
         )
         content = resp.choices[0].message.content.strip()
     except Exception as e:  # pragma: no cover
         return False, f"JUDGE_ERROR: {e}"
+    
     lines = [ln.strip() for ln in content.splitlines() if ln.strip()]
-    verdict_line = lines[0].upper() if lines else "NO"
-    verdict = verdict_line.startswith("Y")
+    verdict = lines[0].upper().startswith("Y") if lines else False
     reasoning = " ".join(lines[1:]) if len(lines) > 1 else ""
     return verdict, reasoning
 
@@ -169,44 +185,34 @@ def run_pipeline() -> PipelineResult:
     load_dotenv()
     vocabulary, prompts, models = load_suite()
 
+    # Generate all model responses
     all_records: List[EvalRecord] = []
     for model in models:
-        recs = build_model_records(model, vocabulary, prompts)
-        all_records.extend(recs)
-        model_file_fragment = model.replace(":", "_")
-        write_jsonl(OUTPUTS_DIR / model / f"result_{model_file_fragment}.jsonl", recs)
+        all_records.extend(build_model_records(model, vocabulary, prompts))
 
+    # Judge responses if OpenAI is available
+    client, judge_model = setup_openai_client()
     judged = 0
-    if OpenAI is not None and os.environ.get(ENV_OPENAI_KEY):
-        client = OpenAI()  # type: ignore[call-arg]
-        judge_model = os.environ.get(ENV_JUDGE_MODEL, DEFAULT_JUDGE_MODEL)
+    if client and judge_model:
         for rec in tqdm(all_records, desc="Judging"):
-            verdict, reasoning = judge_answer(
+            rec.judge_correct_a, rec.judge_reasoning = judge_answer(
                 client, judge_model, rec.word, rec.definition, rec.answer_a or ""
             )
-            rec.judge_correct_a = verdict
-            rec.judge_reasoning = reasoning
             judged += 1
-        # rewrite per-model with judged data
-        for model in models:
-            model_file_fragment = model.replace(":", "_")
-            write_jsonl(
-                OUTPUTS_DIR / model / f"result_{model_file_fragment}.jsonl",
-                (r for r in all_records if r.model == model),
-            )
-    else:
-        if OpenAI is None:
-            print("[WARN] OpenAI not installed; skipping judging.", file=sys.stderr)
-        elif not os.environ.get(ENV_OPENAI_KEY):
-            print(
-                f"[WARN] {ENV_OPENAI_KEY} missing; skipping judging.", file=sys.stderr
-            )
 
-    # aggregated file written once at the end (judged or raw)
+    # Write all output files once
+    for model in models:
+        model_filename = get_model_filename(model)
+        write_jsonl(
+            OUTPUTS_DIR / model / f"result_{model_filename}.jsonl",
+            (r for r in all_records if r.model == model),
+        )
+    
     write_jsonl(OUTPUTS_DIR / "detailed.jsonl", all_records)
     summary = aggregate_summary(all_records)
     with (OUTPUTS_DIR / "summary.json").open("w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
+    
     return PipelineResult(
         models=models,
         total_records=len(all_records),
