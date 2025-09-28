@@ -1,231 +1,235 @@
-from __future__ import annotations
-from pathlib import Path
+
 import json
-import os
-import sys
-from typing import Dict, Iterable, List, Optional
-
-from pydantic import BaseModel, Field, field_validator
-from ollama import chat as ollama_chat
+from pathlib import Path
 from openai import OpenAI
-from dotenv import load_dotenv
 from tqdm import tqdm
-
-ROOT = Path(__file__).parent
-SUITE_DIR = ROOT / "suite"
-OUTPUTS_DIR = ROOT / "outputs"
-DEFAULT_JUDGE_MODEL = "gpt-5"
-ENV_OPENAI_KEY = "OPENAI_API_KEY"
-ENV_JUDGE_MODEL = "JUDGE_MODEL"
+from rich.console import Console
+from rich.table import Table
 
 
-def get_model_filename(model: str) -> str:
-    """Convert model name to safe filename format."""
-    return model.replace(":", "_")
+def load_models() -> list[str]:
+    """Load active models from models_list.txt (excluding # commented lines)"""
+    models = []
+    with open('suite/models_list.txt', 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#'):
+                models.append(line)
+    return models
 
 
-def setup_openai_client() -> tuple[OpenAI | None, str | None]:
-    """Setup OpenAI client and judge model if available."""
-    if OpenAI is None:
-        print("[WARN] OpenAI not installed; skipping judging.", file=sys.stderr)
-        return None, None
-    if not os.environ.get(ENV_OPENAI_KEY):
-        print(f"[WARN] {ENV_OPENAI_KEY} missing; skipping judging.", file=sys.stderr)
-        return None, None
-    return OpenAI(), os.environ.get(ENV_JUDGE_MODEL, DEFAULT_JUDGE_MODEL)
-
-class PipelineResult(BaseModel):
-    models: List[str]
-    total_records: int
-    judged_records: int
-    summary: List[Dict[str, object]]
-    outputs_dir: str
+def load_prompts() -> dict:
+    """Load prompts from prompts.json"""
+    with open('suite/prompts.json', 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 
-class EvalRecord(BaseModel):
-    """Single evaluation record for a (word, model) pair.
-    judge_correct_a / judge_reasoning are populated after judging phase.
-    """
-
-    word: str
-    definition: str
-    model: str
-    answer_a: Optional[str]
-    judge_correct_a: Optional[bool] = None
-    judge_reasoning: Optional[str] = None
+def load_vocabulary() -> list[dict]:
+    """Load vocabulary from vocabulary_short.json"""
+    with open('suite/vocabulary_short.json', 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 
-class VocabEntry(BaseModel):
-    word: str
-    answer: str
-
-
-class Prompts(BaseModel):
-    prompt_a: str = Field(..., description="Base prompt template for answer A")
-
-    @field_validator("prompt_a")
-    @classmethod
-    def _validate_prompt(cls, v: str) -> str: 
-        if "{word}" not in v:
-            raise ValueError("prompt_a must contain '{word}' placeholder")
-        return v
-
-
-def load_suite() -> tuple[List[VocabEntry], Prompts, List[str]]:
-    """Load & validate the evaluation suite.
-
-    Returns:
-        vocabulary: list of VocabEntry models
-        prompts: validated Prompts model
-        model_ids: list of model identifiers (raw strings)
-    Raises:
-        ValueError if any file content is structurally invalid.
-    """
-    with (SUITE_DIR / "vocabulary_short.json").open(
-        "r", encoding="utf-8"
-    ) as vocab_file:
-        vocab_data = json.load(vocab_file)
-    if not isinstance(vocab_data, list):
-        raise ValueError("Vocabulary JSON must be a list of objects")
-    vocabulary: List[VocabEntry] = [VocabEntry(**row) for row in vocab_data]
-
-    with (SUITE_DIR / "prompts.json").open("r", encoding="utf-8") as prompts_file:
-        prompts_data = json.load(prompts_file)
-    if not isinstance(prompts_data, dict):
-        raise ValueError("Prompts JSON must be an object")
-    prompts = Prompts(**prompts_data)
-
-    with (SUITE_DIR / "models_list.txt").open("r", encoding="utf-8") as models_file:
-        model_lines = [
-            line.strip()
-            for line in models_file
-            if line.strip() and not line.strip().startswith("#")
-        ]
-    model_ids = [line.split()[0] for line in model_lines]
-
-    return vocabulary, prompts, model_ids
-
-
-def build_model_records(
-    model: str, vocabulary: List[VocabEntry], prompts: Prompts
-) -> List[EvalRecord]:
-    records: List[EvalRecord] = []
-    for entry in tqdm(vocabulary, desc=f"Generating {model}"):
-        try:
-            resp = ollama_chat(
-                model=model, 
-                messages=[{"role": "user", "content": prompts.prompt_a.format(word=entry.word)}]
-            )
-            answer_a = resp["message"]["content"].strip()
-        except Exception as e:  # pragma: no cover
-            answer_a = f"GENERATION_ERROR: {e}"
-        
-        records.append(EvalRecord(
-            word=entry.word, 
-            definition=entry.answer, 
-            model=model, 
-            answer_a=answer_a
-        ))
-    return records
-
-
-def judge_answer(
-    openai_client, openai_model: str, word: str, definition: str, answer: str
-) -> tuple[bool, str]:
-    try:
-        resp = openai_client.chat.completions.create(
-            model=openai_model,
-            messages=[
-                {"role": "system", "content": (
-                    "Evalúa definiciones de vocabulario español. Responde primera línea YES o NO y segunda línea breve justificación. "
-                    "YES si captura el significado esencial sin contradicciones. NO si falla la categoría básica y rasgo distintivo, hay contradicción o atributo incompatible. Extra info correcta u omisiones menores de detalle no penalizan."
-                )},
-                {"role": "user", "content": (
-                    f"PALABRA: {word}\n"
-                    f"DEFINICION_REFERENCIA: {definition}\n"
-                    f"RESPUESTA_MODELO:\n{answer.strip()}\n\n"
-                    "Evalúa ahora."
-                )},
-            ],
-        )
-        content = resp.choices[0].message.content.strip()
-    except Exception as e:  # pragma: no cover
-        return False, f"JUDGE_ERROR: {e}"
+def prompt_model(word: str, model: str, prompt_template: str) -> str:
+    """Prompt a model via OLAMA using OpenAI client"""
+    client = OpenAI(
+        base_url='http://localhost:11434/v1/',
+        api_key='ollama',
+    )
     
-    lines = [ln.strip() for ln in content.splitlines() if ln.strip()]
-    verdict = lines[0].upper().startswith("Y") if lines else False
-    reasoning = " ".join(lines[1:]) if len(lines) > 1 else ""
-    return verdict, reasoning
+    prompt = prompt_template.format(word=word)
+    response = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content or ""
 
 
-def aggregate_summary(all_records: List[EvalRecord]) -> List[Dict[str, object]]:
-    records_by_model: Dict[str, List[EvalRecord]] = {}
-    for record in all_records:
-        records_by_model.setdefault(record.model, []).append(record)
-    summary: List[Dict[str, object]] = []
-    for model_name, model_records in records_by_model.items():
-        total = len(model_records)
-        correct = sum(1 for r in model_records if r.judge_correct_a)
-        pct = round((correct / total * 100) if total else 0.0, 2)
-        summary.append(
-            {"model": model_name, "total": total, "correct": correct, "pct": pct}
-        )
-    summary.sort(key=lambda r: float(r["pct"]), reverse=True)  # type: ignore[arg-type]
-    return summary
-
-
-def write_jsonl(path: Path, records: Iterable[EvalRecord], mode: str = "w") -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open(mode, encoding="utf-8") as f:
-        for r in records:
-            f.write(json.dumps(r.model_dump(), ensure_ascii=False) + "\n")
-
-
-def run_pipeline() -> PipelineResult:
-    load_dotenv()
-    vocabulary, prompts, models = load_suite()
-
-    # Generate all model responses
-    all_records: List[EvalRecord] = []
-    for model in models:
-        all_records.extend(build_model_records(model, vocabulary, prompts))
-
-    # Judge responses if OpenAI is available
-    client, judge_model = setup_openai_client()
-    judged = 0
-    if client and judge_model:
-        for rec in tqdm(all_records, desc="Judging"):
-            rec.judge_correct_a, rec.judge_reasoning = judge_answer(
-                client, judge_model, rec.word, rec.definition, rec.answer_a or ""
-            )
-            judged += 1
-
-    # Write all output files once
-    for model in models:
-        model_filename = get_model_filename(model)
-        write_jsonl(
-            OUTPUTS_DIR / model / f"result_{model_filename}.jsonl",
-            (r for r in all_records if r.model == model),
-        )
+def judge_response(word: str, correct_definition: str, model_response: str) -> str:
+    """Use GPT-5 to judge if the model response is correct or incorrect"""
+    client = OpenAI()  # Uses standard OpenAI API
     
-    write_jsonl(OUTPUTS_DIR / "detailed.jsonl", all_records)
-    summary = aggregate_summary(all_records)
-    with (OUTPUTS_DIR / "summary.json").open("w", encoding="utf-8") as f:
+    judge_prompt = f"""
+    Evalúa si la definición propuesta es suficientemente correcta (no necesita ser literal) para la palabra indicada.
+
+    Criterios para marcar correct:
+    - Captura el núcleo semántico esencial aunque use sinónimos o parafrasee.
+    - Coincide la categoría gramatical y el sentido principal válido en uso general.
+    - Puede omitir detalles secundarios siempre que no distorsione el significado central.
+    - Si la palabra tiene varios sentidos, acepta uno legítimo y común salvo que la definición de referencia delimite claramente otro sentido específico.
+
+    Marca incorrect si:
+    - Cambia el significado central o selecciona un sentido no pertinente frente a uno claramente indicado.
+    - Es tan vaga o general que podría aplicarse a muchos otros términos sin identificar este.
+    - Es demasiado estrecha o añade rasgos críticos que no forman parte del significado.
+    - Omite un componente indispensable que altera el concepto.
+    - Introduce información falsa, confusa, o mezcla con otro término.
+    - Es circular (solo repite la palabra) o no define realmente.
+
+    Devuelve únicamente: correct o incorrect (en minúsculas, sin explicación).
+
+    Palabra: {word}
+    Definición de referencia: {correct_definition}
+    Definición del modelo: {model_response}
+
+    Respuesta:
+    """
+    
+    response = client.chat.completions.create(
+        model="gpt-5",
+        messages=[{"role": "user", "content": judge_prompt}]
+    )
+    content = response.choices[0].message.content
+    return content.strip().lower() if content else "incorrect"
+
+
+def save_response(model: str, word: str, correct_definition: str, model_response: str, judgment: str = ""):
+    """Save model response to output directory"""
+    output_dir = Path(f"output/{model}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    response_data = {
+        "word": word,
+        "correct_definition": correct_definition,
+        "model_response": model_response,
+        "judgment": judgment
+    }
+    
+    file_path = output_dir / f"{word}.json"
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(response_data, f, ensure_ascii=False, indent=2)
+
+
+def load_response(model: str, word: str) -> dict:
+    """Load existing response from output directory"""
+    file_path = Path(f"output/{model}/{word}.json")
+    if file_path.exists():
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+
+def update_response_judgment(model: str, word: str, judgment: str):
+    """Update existing response with judgment"""
+    response_data = load_response(model, word)
+    response_data["judgment"] = judgment
+    
+    output_dir = Path(f"output/{model}")
+    file_path = output_dir / f"{word}.json"
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(response_data, f, ensure_ascii=False, indent=2)
+
+
+def calculate_accuracy(model: str, vocabulary: list[dict]) -> float:
+    """Calculate accuracy percentage for a model"""
+    correct_count = 0
+    total_count = len(vocabulary)
+    
+    for entry in vocabulary:
+        word = entry["word"]
+        response_data = load_response(model, word)
+        if response_data.get("judgment") == "correct":
+            correct_count += 1
+    
+    return (correct_count / total_count) * 100 if total_count > 0 else 0
+
+
+def generate_summary(models: list[str], vocabulary: list[dict]):
+    """Generate summary.json and display results table"""
+    summary = {}
+    
+    for model in models:
+        accuracy = calculate_accuracy(model, vocabulary)
+        summary[model] = accuracy
+    
+    # Save summary.json
+    with open('summary.json', 'w', encoding='utf-8') as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     
-    return PipelineResult(
-        models=models,
-        total_records=len(all_records),
-        judged_records=judged,
-        summary=summary,
-        outputs_dir=str(OUTPUTS_DIR),
-    )
+    # Display results table
+        console = Console()
+        table = Table(title="Model Performance Summary")
+        table.add_column("Model", style="cyan", no_wrap=True)
+        table.add_column("Accuracy (%)", style="magenta", justify="right")
+        table.add_column("Correct", style="green", justify="right")
+
+        # Compute number of correct definitions per model
+        correct_counts: dict[str, int] = {}
+        for model in summary.keys():
+            correct = 0
+            for entry in vocabulary:
+                word = entry["word"]
+                response_data = load_response(model, word)
+                if response_data.get("judgment") == "correct":
+                    correct += 1
+            correct_counts[model] = correct
+
+        # Monkey-patch add_row so existing loop (adding only 2 args) appends the correct count
+        original_add_row = table.add_row
+
+        def patched_add_row(*args, **kwargs):
+            # Expecting (model, accuracy_str)
+            if len(args) == 2:
+                model_name, accuracy_str = args
+                return original_add_row(model_name, accuracy_str, str(correct_counts.get(model_name, "-")), **kwargs)
+            return original_add_row(*args, **kwargs)
+
+        table.add_row = patched_add_row
+    
+    for model, accuracy in summary.items():
+        table.add_row(model, f"{accuracy:.1f}%")
+    
+    console.print(table)
 
 
-def main(_argv: Optional[List[str]] = None) -> int:
-    _res = run_pipeline()
-    return 0
+def main():
+    # Load data
+    models = load_models()
+    prompts = load_prompts()
+    vocabulary = load_vocabulary()
+    
+    prompt_template = prompts["prompt_a"]
+    
+    console = Console()
+    console.print(f"[bold green]Starting evaluation with {len(models)} models and {len(vocabulary)} words[/bold green]")
+    
+    # Step 2: Prompt models
+    for model in models:
+        console.print(f"[bold blue]Processing model: {model}[/bold blue]")
+        
+        for entry in tqdm(vocabulary, desc=f"Prompting {model}"):
+            word = entry["word"]
+            correct_definition = entry["answer"]
+            
+            # Skip if already processed
+            if load_response(model, word):
+                continue
+                
+            model_response = prompt_model(word, model, prompt_template)
+            save_response(model, word, correct_definition, model_response)
+    
+    # Step 3: Judge responses
+    console.print("[bold yellow]Starting judgment phase...[/bold yellow]")
+    
+    for model in models:
+        console.print(f"[bold blue]Judging responses for: {model}[/bold blue]")
+        
+        for entry in tqdm(vocabulary, desc=f"Judging {model}"):
+            word = entry["word"]
+            correct_definition = entry["answer"]
+            
+            response_data = load_response(model, word)
+            if not response_data or response_data.get("judgment"):
+                continue
+                
+            model_response = response_data["model_response"]
+            judgment = judge_response(word, correct_definition, model_response)
+            update_response_judgment(model, word, judgment)
+    
+    # Step 4: Generate summary
+    console.print("[bold green]Generating summary...[/bold green]")
+    generate_summary(models, vocabulary)
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

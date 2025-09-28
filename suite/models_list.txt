@@ -2,4 +2,4 @@
 #mixtral:latest
 gemma3:12b       
 #mistral:latest 
-#llama3.1:latest
+llama3.1:latest
