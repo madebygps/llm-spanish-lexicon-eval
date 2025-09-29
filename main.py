@@ -83,19 +83,70 @@ def judge_response(word: str, correct_definition: str, model_response: str) -> s
     return content.strip().lower() if content else "incorrect"
 
 
-def save_response(model: str, word: str, correct_definition: str, model_response: str, judgment: str = ""):
+def judge_response_b(word: str, correct_definition: str, model_response: str) -> str:
+    """Use GPT-5 to judge if the model response for prompt B demonstrates understanding of the word"""
+    client = OpenAI()  # Uses standard OpenAI API
+    
+    judge_prompt = f"""
+    Evalúa si las dos frases proporcionadas demuestran una comprensión correcta de la palabra indicada.
+
+    Criterios para marcar correct:
+    - La primera frase usa la palabra '{word}' de manera apropiada y coherente con su definición.
+    - La segunda frase está relacionada con la primera y complementa el significado sin usar la palabra.
+    - Ambas frases juntas revelan comprensión del significado de la palabra.
+    - El uso contextual de la palabra es correcto según su definición de referencia.
+
+    Marca incorrect si:
+    - La palabra se usa incorrectamente en la primera frase.
+    - Las frases no están relacionadas o no complementan el significado.
+    - La segunda frase usa la palabra cuando no debería.
+    - Las frases no demuestran comprensión real del significado de la palabra.
+    - El contexto de uso contradice la definición de referencia.
+
+    Devuelve únicamente: correct o incorrect (en minúsculas, sin explicación).
+
+    Palabra: {word}
+    Definición de referencia: {correct_definition}
+    Respuesta del modelo: {model_response}
+
+    Respuesta:
+    """
+    
+    response = client.chat.completions.create(
+        model="gpt-5",
+        messages=[{"role": "user", "content": judge_prompt}]
+    )
+    content = response.choices[0].message.content
+    return content.strip().lower() if content else "incorrect"
+
+
+def save_response(model: str, word: str, correct_definition: str, model_response_a: str = "", model_response_b: str = "", judgment_a: str = "", judgment_b: str = ""):
     """Save model response to output directory"""
     output_dir = Path(f"output/{model}")
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    response_data = {
-        "word": word,
-        "correct_definition": correct_definition,
-        "model_response": model_response,
-        "judgment": judgment
-    }
-    
+    # Load existing data if it exists to preserve existing responses
     file_path = output_dir / f"{word}.json"
+    response_data = {}
+    if file_path.exists():
+        with open(file_path, 'r', encoding='utf-8') as f:
+            response_data = json.load(f)
+    
+    # Update with new data
+    response_data.update({
+        "word": word,
+        "correct_definition": correct_definition
+    })
+    
+    if model_response_a:
+        response_data["model_response_a"] = model_response_a
+    if model_response_b:
+        response_data["model_response_b"] = model_response_b
+    if judgment_a:
+        response_data["judgment_a"] = judgment_a
+    if judgment_b:
+        response_data["judgment_b"] = judgment_b
+    
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(response_data, f, ensure_ascii=False, indent=2)
 
@@ -109,10 +160,14 @@ def load_response(model: str, word: str) -> dict:
     return {}
 
 
-def update_response_judgment(model: str, word: str, judgment: str):
+def update_response_judgment(model: str, word: str, judgment_a: str = "", judgment_b: str = ""):
     """Update existing response with judgment"""
     response_data = load_response(model, word)
-    response_data["judgment"] = judgment
+    
+    if judgment_a:
+        response_data["judgment_a"] = judgment_a
+    if judgment_b:
+        response_data["judgment_b"] = judgment_b
     
     output_dir = Path(f"output/{model}")
     file_path = output_dir / f"{word}.json"
@@ -120,15 +175,22 @@ def update_response_judgment(model: str, word: str, judgment: str):
         json.dump(response_data, f, ensure_ascii=False, indent=2)
 
 
-def calculate_accuracy(model: str, vocabulary: list[dict]) -> float:
-    """Calculate accuracy percentage for a model"""
+def calculate_accuracy(model: str, vocabulary: list[dict], prompt_type: str = "a") -> float:
+    """Calculate accuracy percentage for a model for a specific prompt type"""
     correct_count = 0
     total_count = len(vocabulary)
     
     for entry in vocabulary:
         word = entry["word"]
         response_data = load_response(model, word)
-        if response_data.get("judgment") == "correct":
+        
+        # Check for judgment based on prompt type
+        if prompt_type == "a":
+            judgment_field = response_data.get("judgment_a")
+        else:  # prompt_type == "b"
+            judgment_field = response_data.get("judgment_b")
+            
+        if judgment_field == "correct":
             correct_count += 1
     
     return (correct_count / total_count) * 100 if total_count > 0 else 0
@@ -139,45 +201,56 @@ def generate_summary(models: list[str], vocabulary: list[dict]):
     summary = {}
     
     for model in models:
-        accuracy = calculate_accuracy(model, vocabulary)
-        summary[model] = accuracy
+        accuracy_a = calculate_accuracy(model, vocabulary, "a")
+        accuracy_b = calculate_accuracy(model, vocabulary, "b")
+        summary[model] = {
+            "prompt_a_accuracy": accuracy_a,
+            "prompt_b_accuracy": accuracy_b
+        }
     
     # Save summary.json
     with open('summary.json', 'w', encoding='utf-8') as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     
     # Display results table
-        console = Console()
-        table = Table(title="Model Performance Summary")
-        table.add_column("Model", style="cyan", no_wrap=True)
-        table.add_column("Accuracy (%)", style="magenta", justify="right")
-        table.add_column("Correct", style="green", justify="right")
+    console = Console()
+    table = Table(title="Model Performance Summary")
+    table.add_column("Model", style="cyan", no_wrap=True)
+    table.add_column("Prompt A Accuracy (%)", style="magenta", justify="right")
+    table.add_column("Prompt A Correct", style="green", justify="right")
+    table.add_column("Prompt B Accuracy (%)", style="blue", justify="right")
+    table.add_column("Prompt B Correct", style="yellow", justify="right")
 
-        # Compute number of correct definitions per model
-        correct_counts: dict[str, int] = {}
-        for model in summary.keys():
-            correct = 0
-            for entry in vocabulary:
-                word = entry["word"]
-                response_data = load_response(model, word)
-                if response_data.get("judgment") == "correct":
-                    correct += 1
-            correct_counts[model] = correct
-
-        # Monkey-patch add_row so existing loop (adding only 2 args) appends the correct count
-        original_add_row = table.add_row
-
-        def patched_add_row(*args, **kwargs):
-            # Expecting (model, accuracy_str)
-            if len(args) == 2:
-                model_name, accuracy_str = args
-                return original_add_row(model_name, accuracy_str, str(correct_counts.get(model_name, "-")), **kwargs)
-            return original_add_row(*args, **kwargs)
-
-        table.add_row = patched_add_row
+    # Compute number of correct definitions per model for both prompts
+    correct_counts_a: dict[str, int] = {}
+    correct_counts_b: dict[str, int] = {}
     
-    for model, accuracy in summary.items():
-        table.add_row(model, f"{accuracy:.1f}%")
+    for model in summary.keys():
+        correct_a = 0
+        correct_b = 0
+        for entry in vocabulary:
+            word = entry["word"]
+            response_data = load_response(model, word)
+            
+            # Check prompt A judgment
+            if response_data.get("judgment_a") == "correct":
+                correct_a += 1
+            
+            # Check prompt B judgment
+            if response_data.get("judgment_b") == "correct":
+                correct_b += 1
+                
+        correct_counts_a[model] = correct_a
+        correct_counts_b[model] = correct_b
+    
+    for model, accuracies in summary.items():
+        table.add_row(
+            model, 
+            f"{accuracies['prompt_a_accuracy']:.1f}%",
+            str(correct_counts_a.get(model, "-")),
+            f"{accuracies['prompt_b_accuracy']:.1f}%",
+            str(correct_counts_b.get(model, "-"))
+        )
     
     console.print(table)
 
@@ -188,12 +261,13 @@ def main():
     prompts = load_prompts()
     vocabulary = load_vocabulary()
     
-    prompt_template = prompts["prompt_a"]
+    prompt_template_a = prompts["prompt_a"]
+    prompt_template_b = prompts["prompt_b"]
     
     console = Console()
     console.print(f"[bold green]Starting evaluation with {len(models)} models and {len(vocabulary)} words[/bold green]")
     
-    # Step 2: Prompt models
+    # Step 2: Prompt models with both prompts
     for model in models:
         console.print(f"[bold blue]Processing model: {model}[/bold blue]")
         
@@ -201,14 +275,19 @@ def main():
             word = entry["word"]
             correct_definition = entry["answer"]
             
-            # Skip if already processed
-            if load_response(model, word):
-                continue
-                
-            model_response = prompt_model(word, model, prompt_template)
-            save_response(model, word, correct_definition, model_response)
+            response_data = load_response(model, word)
+            
+            # Process prompt A
+            if not response_data.get("model_response_a"):
+                model_response_a = prompt_model(word, model, prompt_template_a)
+                save_response(model, word, correct_definition, model_response_a=model_response_a)
+            
+            # Process prompt B
+            if not response_data.get("model_response_b"):
+                model_response_b = prompt_model(word, model, prompt_template_b)
+                save_response(model, word, correct_definition, model_response_b=model_response_b)
     
-    # Step 3: Judge responses
+    # Step 3: Judge responses for both prompts
     console.print("[bold yellow]Starting judgment phase...[/bold yellow]")
     
     for model in models:
@@ -219,12 +298,22 @@ def main():
             correct_definition = entry["answer"]
             
             response_data = load_response(model, word)
-            if not response_data or response_data.get("judgment"):
+            if not response_data:
                 continue
-                
-            model_response = response_data["model_response"]
-            judgment = judge_response(word, correct_definition, model_response)
-            update_response_judgment(model, word, judgment)
+            
+            # Judge prompt A response
+            if not response_data.get("judgment_a"):
+                model_response_a = response_data.get("model_response_a")
+                if model_response_a:
+                    judgment_a = judge_response(word, correct_definition, model_response_a)
+                    update_response_judgment(model, word, judgment_a=judgment_a)
+            
+            # Judge prompt B response
+            if not response_data.get("judgment_b"):
+                model_response_b = response_data.get("model_response_b")
+                if model_response_b:
+                    judgment_b = judge_response_b(word, correct_definition, model_response_b)
+                    update_response_judgment(model, word, judgment_b=judgment_b)
     
     # Step 4: Generate summary
     console.print("[bold green]Generating summary...[/bold green]")

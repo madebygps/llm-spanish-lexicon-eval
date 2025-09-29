@@ -9,6 +9,7 @@ __pycache__/
 # outputs
 /outputs/
 /output
+summary.json
 
 # Distribution / packaging
 .Python
@@ -209,3 +210,4 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+summary.json
