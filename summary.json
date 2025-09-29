@@ -1,4 +1,10 @@
 {
-  "gemma3:12b": 70.0,
-  "llama3.1:latest": 30.0
+  "model1": {
+    "prompt_a": 100.0,
+    "prompt_b": 0.0
+  },
+  "model2": {
+    "prompt_a": 100.0,
+    "prompt_b": 0.0
+  }
 }
