@@ -1,10 +1,10 @@
 {
   "gemma3:12b": {
-    "prompt_a_accuracy": 70.0,
+    "prompt_a_accuracy": 60.0,
     "prompt_b_accuracy": 90.0
   },
   "llama3.1:latest": {
-    "prompt_a_accuracy": 30.0,
+    "prompt_a_accuracy": 20.0,
     "prompt_b_accuracy": 40.0
   }
 }
