@@ -12,3 +12,13 @@ dependencies = [
     "pydantic>=2.9.0",
     "rich>=14.1.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = "."
+testpaths = ["tests"]
