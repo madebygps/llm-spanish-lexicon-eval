@@ -10,6 +10,36 @@ This project evaluates how well different Large Language Models understand Spani
 3. Using GPT-5 as a judge to evaluate response correctness
 4. Generating comparative accuracy reports
 
+## 📋 Prerequisites
+
+- Python 3.13+
+- [uv](https://github.com/astral-sh/uv) for dependency management
+- [Ollama](https://ollama.com/) installed and running locally
+- OpenAI API key with GPT-5 access
+
+## 🚀 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/madebygps/llm-spanish-lexicon-eval.git
+cd llm-spanish-lexicon-eval
+
+# Install dependencies
+uv sync
+
+# Set up your OpenAI API key as environment variable
+export OPENAI_API_KEY='your-api-key-here'
+
+# Run the evaluation
+uv run python main.py
+```
+
+This will:
+1. Load active models from `suite/models_list.txt`
+2. Test each model with both prompt types on vocabulary words
+3. Use GPT-5 to judge all responses
+4. Generate `summary.json` and display a Rich table with results
+
 ## 📊 Project Structure
 
 ```
@@ -25,67 +55,24 @@ llm-spanish-lexicon-eval/
 │   ├── prompts.json        # Prompt templates
 │   └── vocabulary_*.json   # Spanish words to test
 ├── output/                 # Individual response files per model
-└── tests/                  # Comprehensive test suite (64 tests, 93% coverage)
+└── tests/                  # Comprehensive test suite (93% coverage)
 ```
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Python 3.13+
-- [uv](https://github.com/astral-sh/uv) for dependency management
-- Ollama running locally (for LLM evaluation)
-- OpenAI API key (for GPT-5 judging)
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/madebygps/llm-spanish-lexicon-eval.git
-cd llm-spanish-lexicon-eval
-
-# Install dependencies
-uv sync
-
-# Set up environment variables
-cp .env.example .env
-# Add your OPENAI_API_KEY to .env
-```
-
-### Running the Evaluation
-
-```bash
-# Run the full evaluation pipeline
-uv run python main.py
-```
-
-This will:
-1. Load active models from `suite/models_list.txt`
-2. Prompt each model with both prompt types
-3. Use GPT-5 to judge all responses
-4. Generate `summary.json` and display results
 
 ## 🧪 Testing
 
 This project has a comprehensive test suite with **93% code coverage**.
 
-### Run Tests
-
 ```bash
 # Run all tests
 uv run pytest
-
-# Run with verbose output
-uv run pytest -v
 
 # Run with coverage report
 uv run pytest --cov=. --cov-report=html
 # Then open htmlcov/index.html
 
 # Run specific test file
-uv run pytest tests/test_data_loader.py
+uv run pytest tests/test_data_loader.py -v
 ```
-
-### Test Coverage
 
 | Module | Coverage |
 |--------|----------|
@@ -96,79 +83,128 @@ uv run pytest tests/test_data_loader.py
 | `reporter.py` | 100% |
 | **Overall** | **93%** |
 
-See [TEST_SUITE_SUMMARY.md](TEST_SUITE_SUMMARY.md) for detailed test documentation.
-
 ## 📝 Configuration
 
 ### Models List (`suite/models_list.txt`)
+
+Select which models to evaluate by uncommenting them (remove `#`):
+
 ```
-# Comment out models with #
-gemma3:12b
-llama3.1:latest
 #solar:10.7b
+#mixtral:latest
+gemma3:12b       
+#mistral:latest 
+llama3.1:latest
 ```
 
+**To run different models:**
+1. Comment out models you don't want to test with `#`
+2. Uncomment models you want to test (remove `#`)
+3. Make sure the model is installed in Ollama: `ollama pull model-name`
+
 ### Prompts (`suite/prompts.json`)
+
+Two prompt strategies are used:
+
 ```json
 {
-  "prompt_a": "Define la palabra {word}",
-  "prompt_b": "Escribe dos frases sobre {word}..."
+  "prompt_a": "Dime la definición de la palabra '{word}'.",
+  "prompt_b": "Escribe dos frases, una con la palabra '{word}', y otra que no contenga esa palabra, pero que esté relacionada con la primera y complemente su significado."
 }
 ```
 
 ### Vocabulary (`suite/vocabulary_short.json`)
+
+Each entry contains a Spanish word and its definition:
+
 ```json
 [
-  {"word": "ardilla", "answer": "Un roedor pequeño..."},
-  {"word": "corbata", "answer": "Una prenda de vestir..."}
+  {
+    "word": "ardilla",
+    "answer": "Mamífero roedor, de unos 20 cm de largo, de color negro rojizo por el lomo, blanco por el vientre y con cola muy poblada."
+  },
+  {
+    "word": "corbata",
+    "answer": "Prenda de adorno, especialmente masculina, consistente en una banda larga y estrecha que se coloca alrededor del cuello."
+  }
 ]
 ```
 
+**To add new vocabulary:**
+1. Edit `suite/vocabulary_short.json` or `suite/vocabulary_complete.json`
+2. Add entries with `word` and `answer` fields
+3. The code will automatically use `vocabulary_short.json` by default
+
 ## 📊 Output
 
-### Response Files
-Individual responses are saved to `output/{model}/{word}.json`:
-```json
-{
-  "word": "ardilla",
-  "correct_definition": "Un roedor pequeño...",
-  "model_response_a": "...",
-  "judgment_a": "correct",
-  "model_response_b": "...",
-  "judgment_b": "incorrect"
-}
-```
-
 ### Summary Report
-The `summary.json` file contains accuracy metrics:
+
+After running the evaluation, a `summary.json` file is generated with accuracy metrics:
+
 ```json
 {
   "gemma3:12b": {
-    "prompt_a_accuracy": 80.0,
-    "prompt_b_accuracy": 70.0
+    "prompt_a_accuracy": 60.0,
+    "prompt_b_accuracy": 90.0
   },
   "llama3.1:latest": {
-    "prompt_a_accuracy": 90.0,
-    "prompt_b_accuracy": 85.0
+    "prompt_a_accuracy": 20.0,
+    "prompt_b_accuracy": 40.0
   }
 }
 ```
 
-A Rich table is also displayed in the terminal with the results.
+A Rich table is also displayed in the terminal:
+
+```
+                Model Performance Summary
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
+┃ Model          ┃ Prompt A Accuracy   ┃ Prompt A        ┃ Prompt B Accuracy   ┃ Prompt B        ┃
+┃                ┃ (%)                 ┃ Correct         ┃ (%)                 ┃ Correct         ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━┩
+│ gemma3:12b     │                60.0%│                6│                90.0%│                9│
+│ llama3.1:latest│                20.0%│                2│                40.0%│                4│
+└────────────────┴─────────────────────┴─────────────────┴─────────────────────┴─────────────────┘
+```
+
+### Response Files
+
+Individual model responses are saved to `output/{model}/{word}.json`:
+
+```json
+{
+  "word": "ardilla",
+  "correct_definition": "Mamífero roedor, de unos 20 cm de largo...",
+  "model_response_a": "Un animal pequeño que vive en los árboles...",
+  "judgment_a": "correct",
+  "model_response_b": "La ardilla guarda nueces para el invierno. Este comportamiento es común en roedores.",
+  "judgment_b": "correct"
+}
+```
+
+### Next Steps After Running
+
+1. **Review Results**: Check `summary.json` and the terminal table to compare model performance
+2. **Analyze Responses**: Examine individual response files in `output/{model}/` to understand where models succeed or fail
+3. **Adjust Configuration**: 
+   - Try different models by editing `suite/models_list.txt`
+   - Test with more vocabulary by switching to `vocabulary_complete.json` in `data_loader.py`
+   - Modify prompts in `suite/prompts.json` to test different strategies
+4. **Re-run Evaluation**: The system will skip already-evaluated responses, so you can resume or add new models anytime
 
 ## 🛠️ Development
-
-### Adding a New Module
-1. Create the module file
-2. Add corresponding test file in `tests/`
-3. Run tests: `uv run pytest`
-4. Check coverage: `uv run pytest --cov`
 
 ### Code Style
 - Use type hints for all functions
 - Follow PEP 8 guidelines
 - Keep functions focused and testable
 - Document with docstrings
+
+### Adding New Features
+1. Create the module file
+2. Add corresponding test file in `tests/`
+3. Run tests: `uv run pytest`
+4. Check coverage: `uv run pytest --cov`
 
 ## 🧩 Architecture
 
@@ -180,12 +216,6 @@ The project follows a modular design with clear separation of concerns:
 - **Presentation** (`reporter.py`): Output formatting
 - **Orchestration** (`main.py`): Workflow coordination
 
-All modules are independently testable with 100% coverage.
-
-## 📄 License
-
-MIT License - See [LICENSE](LICENSE) for details
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -196,9 +226,7 @@ MIT License - See [LICENSE](LICENSE) for details
 
 ## 📚 Resources
 
-- [Project Documentation](./docs/)
 - [Test Suite Documentation](./tests/README.md)
-- [Test Summary](./TEST_SUITE_SUMMARY.md)
 
 ## ✨ Features
 
@@ -210,3 +238,7 @@ MIT License - See [LICENSE](LICENSE) for details
 - ✅ GPT-5 based evaluation
 - ✅ Rich terminal output
 - ✅ JSON-based configuration
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) for details
